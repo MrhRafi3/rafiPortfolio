@@ -1,0 +1,153 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-red: #F20D16;
+  --color-dark: #080713;
+  --color-cream: #F1EBDD;
+  --color-white: #FFFFFF;
+  --color-muted: #A69F99;
+}
+
+html {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: #080713;
+  color: #FFFFFF;
+}
+
+/* Lenis smooth scroll support */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Custom Typography & Editorial Effects */
+.font-display {
+  font-family: 'Syne', sans-serif;
+  letter-spacing: -0.04em;
+}
+
+.font-serif-italic {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  letter-spacing: -0.01em;
+}
+
+.font-tech {
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: -0.02em;
+}
+
+/* Outlined text effect like in reference video */
+.text-outline-white {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.85);
+}
+
+.text-outline-dark {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(8, 7, 19, 0.85);
+}
+
+.text-outline-red {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(242, 13, 22, 0.85);
+}
+
+/* Multi-layer text ghosting/echo effect as seen in "Design systems" */
+.text-echo {
+  position: relative;
+}
+.text-echo::before {
+  content: attr(data-text);
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.35);
+  z-index: -1;
+  pointer-events: none;
+}
+.text-echo::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* Hide native scrollbar for seamless presentation while preserving scrollability */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #080713;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2835;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #F20D16;
+}
+
+/* Selection */
+::selection {
+  background-color: #F20D16;
+  color: #FFFFFF;
+}
+
+/* Subtle Film Grain Overlay - Isolated to dedicated GPU compositing plane */
+.grain-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  transform: translateZ(0);
+  will-change: transform;
+  contain: strict;
+}
+
+/* Accessibility: Prefers Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .grain-overlay {
+    display: none;
+  }
+}
+
+/* Accessible Focus States */
+:focus-visible {
+  outline: 2px solid #F20D16;
+  outline-offset: 3px;
+}
