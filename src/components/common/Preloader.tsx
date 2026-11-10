@@ -9,24 +9,57 @@ export const Preloader: React.FC<PreloaderProps> = ({ onLoaded }) => {
   const [isDone, setIsDone] = useState(false);
 
   useEffect(() => {
-    // Smooth progress simulation tied to document readiness
     let current = 0;
-    const interval = setInterval(() => {
-      current += Math.floor(Math.random() * 18) + 12;
-      if (current >= 100) {
-        current = 100;
-        setProgress(100);
-        clearInterval(interval);
-        setTimeout(() => {
-          setIsDone(true);
-          onLoaded?.();
-        }, 400);
-      } else {
-        setProgress(current);
-      }
-    }, 60);
+    let fontsLoaded = false;
 
-    return () => clearInterval(interval);
+    if (typeof document !== 'undefined' && document.fonts) {
+      document.fonts.ready
+        .then(() => {
+          fontsLoaded = true;
+        })
+        .catch(() => {
+          fontsLoaded = true;
+        });
+    } else {
+      fontsLoaded = true;
+    }
+
+    // Safety timeout: ensure font delays never cause indefinite loading states
+    const safetyTimer = setTimeout(() => {
+      fontsLoaded = true;
+    }, 1800);
+
+    const interval = setInterval(() => {
+      // Advance to 85% swiftly, then wait for fonts to resolve before 100%
+      if (current < 85) {
+        current += Math.floor(Math.random() * 16) + 12;
+        if (current > 85) current = 85;
+        setProgress(current);
+      } else if (fontsLoaded) {
+        current += 15;
+        if (current >= 100) {
+          current = 100;
+          setProgress(100);
+          clearInterval(interval);
+          clearTimeout(safetyTimer);
+
+          // Notify parent immediately as the reveal transition starts
+          onLoaded?.();
+
+          // Unmount after opacity fade-out completes
+          setTimeout(() => {
+            setIsDone(true);
+          }, 650);
+        } else {
+          setProgress(current);
+        }
+      }
+    }, 45);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(safetyTimer);
+    };
   }, [onLoaded]);
 
   if (isDone) return null;

@@ -60,6 +60,7 @@ export function getLenis(): Lenis | null {
 
 export function refreshScrollTriggers() {
   ScrollTrigger.refresh();
+  ScrollTrigger.update();
 }
 
 export function scrollToSection(target: string) {

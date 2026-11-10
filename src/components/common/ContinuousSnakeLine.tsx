@@ -9,6 +9,11 @@ interface Point {
   y: number;
 }
 
+interface GradientStop {
+  offset: string;
+  color: string;
+}
+
 // Convert an array of 2D waypoints to a smooth C1-continuous cubic Bézier SVG path
 function catmullRomToBezier(points: Point[]): string {
   if (points.length < 2) return '';
@@ -47,6 +52,16 @@ export const ContinuousSnakeLine: React.FC<ContinuousSnakeLineProps> = ({
     height: 12000,
   });
   const [pathData, setPathData] = useState<string>('');
+  const [gradientStops, setGradientStops] = useState<GradientStop[]>([
+    { offset: '0%', color: '#F1EBDD' },
+    { offset: '7%', color: '#F1EBDD' },
+    { offset: '8%', color: '#F20D16' },
+    { offset: '63%', color: '#F20D16' },
+    { offset: '64%', color: '#F1EBDD' },
+    { offset: '69%', color: '#F1EBDD' },
+    { offset: '70%', color: '#F20D16' },
+    { offset: '100%', color: '#F20D16' },
+  ]);
 
   const calculateWaypoints = useCallback(() => {
     const width = window.innerWidth;
@@ -141,6 +156,40 @@ export const ContinuousSnakeLine: React.FC<ContinuousSnakeLineProps> = ({
     setDimensions({ width, height: docHeight });
     const d = catmullRomToBezier(waypoints);
     setPathData(d);
+
+    // Background-aware seamless color adaptation gradient
+    const stops: GradientStop[] = [];
+    const addStop = (y: number, stopColor: string) => {
+      const clampedY = Math.max(0, Math.min(docHeight, y));
+      const pct = ((clampedY / docHeight) * 100).toFixed(2) + '%';
+      stops.push({ offset: pct, color: stopColor });
+    };
+
+    const RED = '#F20D16';
+    const CREAM = '#F1EBDD';
+    const transitionZone = 160;
+
+    // 1. Hero is Red background -> Line is Warm Cream (#F1EBDD) for high contrast
+    addStop(0, CREAM);
+    addStop(hero.top + hero.height - transitionZone, CREAM);
+
+    // Seamlessly blend into Red as it enters Intermediate Band & About Me
+    addStop(hero.top + hero.height, RED);
+
+    // 2. IntermediateBand, AboutMe, Skills, Work, Stage1, Stage2 -> Line is Red
+    addStop(stage3.top - transitionZone, RED);
+
+    // Seamlessly blend into Cream as it enters Stage 03 Develop (Red background)
+    addStop(stage3.top + 40, CREAM);
+    addStop(stage3.top + stage3.height - 40, CREAM);
+
+    // Seamlessly blend back to Red as it enters Stage 04 Engineer (Dark background)
+    addStop(stage3.top + stage3.height + transitionZone, RED);
+
+    // 3. Stage 04, Stage 05, Deep Dive, 3D Phone, Contact -> Line is Red
+    addStop(docHeight, RED);
+
+    setGradientStops(stops);
   }, []);
 
   // Recalculate waypoints on mount, fonts ready, and resize (debounced)
@@ -225,30 +274,44 @@ export const ContinuousSnakeLine: React.FC<ContinuousSnakeLineProps> = ({
       style={{
         height: `${dimensions.height}px`,
         transform: 'translateZ(0)',
-        willChange: 'stroke-dashoffset',
       }}
       viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <defs>
+        <linearGradient
+          id="continuous-snake-gradient"
+          x1="0"
+          y1="0"
+          x2="0"
+          y2={dimensions.height}
+          gradientUnits="userSpaceOnUse"
+        >
+          {gradientStops.map((stop, idx) => (
+            <stop key={idx} offset={stop.offset} stopColor={stop.color} />
+          ))}
+        </linearGradient>
+      </defs>
+
       {pathData && (
         <>
           {/* Hardware-accelerated soft drop shadow path (zero SVG filter buffer allocation) */}
           <path
             ref={shadowPathRef}
             d={pathData}
-            stroke="rgba(0, 0, 0, 0.26)"
+            stroke="rgba(0, 0, 0, 0.28)"
             strokeWidth={strokeWidth + 6}
             strokeLinecap="round"
             strokeLinejoin="round"
             transform="translate(0, 6)"
             vectorEffect="non-scaling-stroke"
           />
-          {/* Main Vibrant Red Organic Stroke */}
+          {/* Main Vibrant Organic Stroke with Background-Aware Color Adaptation */}
           <path
             ref={pathRef}
             d={pathData}
-            stroke={color}
+            stroke="url(#continuous-snake-gradient)"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeLinejoin="round"

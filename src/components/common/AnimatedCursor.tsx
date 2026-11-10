@@ -103,7 +103,7 @@ export const AnimatedCursor: React.FC = () => {
         className={`fixed top-0 left-0 rounded-full flex items-center justify-center transition-all duration-300 ease-out border border-white/60 opacity-0 ${
           isHovering
             ? cursorText
-              ? 'w-16 h-16 bg-[#F20D16] border-[#F20D16] text-white'
+              ? 'w-16 h-16 bg-[#080713] border-white/30 text-white shadow-2xl scale-110'
               : 'w-12 h-12 bg-white/20 backdrop-blur-sm scale-110'
             : isPointer
             ? 'w-10 h-10 bg-white/20 scale-100'

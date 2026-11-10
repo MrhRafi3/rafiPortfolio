@@ -71,7 +71,9 @@ export const WorkflowSection: React.FC = () => {
 
   return (
     <div id="process" ref={containerRef} className="relative w-full">
-      {stages.map((stage, index) => (
+      {stages.map((stage, index) => {
+        const isRedStage = stage.bgClass.includes('#F20D16');
+        return (
         <section
           key={stage.id}
           id={stage.id}
@@ -81,7 +83,9 @@ export const WorkflowSection: React.FC = () => {
             {/* Top Stage Header */}
             <div className="flex items-center justify-between border-b border-current/15 pb-4 mb-10">
               <div className="flex items-center gap-4">
-                <span className="font-tech text-xs md:text-sm font-bold tracking-widest uppercase text-[#F20D16]">
+                <span className={`font-tech text-xs md:text-sm font-bold tracking-widest uppercase ${
+                  isRedStage ? 'text-[#080713]' : 'text-[#F20D16]'
+                }`}>
                   STAGE {stage.number} / 05
                 </span>
                 <span className="opacity-30">•</span>
@@ -99,7 +103,9 @@ export const WorkflowSection: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[480px]">
               {/* Left Column: Stage Breakdown */}
               <div className="lg:col-span-6 flex flex-col z-20">
-                <span className="font-tech text-xs uppercase tracking-widest text-[#F20D16] font-bold mb-2">
+                <span className={`font-tech text-xs uppercase tracking-widest font-bold mb-2 ${
+                  isRedStage ? 'text-white' : 'text-[#F20D16]'
+                }`}>
                   // METHODOLOGY {stage.number}
                 </span>
                 <h3 className="font-display font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[0.92] mb-5 uppercase">
@@ -120,7 +126,9 @@ export const WorkflowSection: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {stage.deliverables.map((item, dIdx) => (
                       <div key={dIdx} className="flex items-center gap-2 text-xs font-medium">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#F20D16] shrink-0" />
+                        <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 ${
+                          isRedStage ? 'text-[#080713]' : 'text-[#F20D16]'
+                        }`} />
                         <span>{item}</span>
                       </div>
                     ))}
@@ -219,7 +227,13 @@ export const WorkflowSection: React.FC = () => {
                           : 'opacity-50 hover:opacity-80'
                       }`}
                     >
-                      {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#F20D16]" />}
+                      {isActive && (
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            isRedStage ? 'bg-[#080713]' : 'bg-[#F20D16]'
+                          }`}
+                        />
+                      )}
                       <span>{stg.number} {stg.title}</span>
                     </button>
                   );
@@ -228,7 +242,9 @@ export const WorkflowSection: React.FC = () => {
 
               <button
                 onClick={() => scrollToSection('#work')}
-                className="group flex items-center gap-2 text-xs md:text-sm font-bold uppercase tracking-wider hover:text-[#F20D16] transition-colors"
+                className={`group flex items-center gap-2 text-xs md:text-sm font-bold uppercase tracking-wider transition-colors ${
+                  isRedStage ? 'hover:text-white' : 'hover:text-[#F20D16]'
+                }`}
               >
                 <span>Inspect Verified Projects</span>
                 <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -236,7 +252,8 @@ export const WorkflowSection: React.FC = () => {
             </div>
           </div>
         </section>
-      ))}
+        );
+      })}
     </div>
   );
 };

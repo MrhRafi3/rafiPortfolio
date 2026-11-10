@@ -108,10 +108,10 @@ export const Interactive3DPhoneSection: React.FC = () => {
                   {activeProject.overview}
                 </p>
 
-                <div className="flex items-center justify-between pt-3 border-t border-white/10">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-white/10">
                   <div className="flex items-center gap-2 text-xs font-tech text-emerald-400">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span className="line-clamp-1">{activeProject.metricsOrHighlight}</span>
+                    <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                    <span className="leading-snug">{activeProject.metricsOrHighlight}</span>
                   </div>
 
                   <button

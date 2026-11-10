@@ -10,16 +10,20 @@ gsap.registerPlugin(ScrollTrigger);
 
 interface HeroSectionProps {
   onContactClick?: () => void;
+  isReady?: boolean;
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, isReady = true }) => {
   const sectionRef = useRef<HTMLElement>(null);
+  const titleWrapperRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const phraseRef = useRef<HTMLDivElement>(null);
   const bottomContentRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!isReady) return;
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
@@ -31,38 +35,40 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
       .from(titleRef.current, {
         scale: 0.94,
         opacity: 0,
-        y: 50,
-        duration: 1.3,
+        y: 40,
+        duration: 1.1,
       }, '-=0.5')
       .from(phraseRef.current?.children || [], {
-        y: 35,
-        opacity: 0,
-        stagger: 0.12,
-        duration: 0.9,
-      }, '-=0.8')
-      .from(bottomContentRef.current?.children || [], {
-        y: 25,
+        y: 30,
         opacity: 0,
         stagger: 0.1,
         duration: 0.8,
+      }, '-=0.7')
+      .from(bottomContentRef.current?.children || [], {
+        y: 20,
+        opacity: 0,
+        stagger: 0.08,
+        duration: 0.7,
       }, '-=0.6');
 
-      // Scroll-linked exit transformations
-      gsap.to(titleRef.current, {
-        y: -140,
-        scale: 0.94,
-        opacity: 0.8,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        },
-      });
+      // Scroll-linked exit transformations on outer wrapper (avoids tween collision with title entrance)
+      if (titleWrapperRef.current) {
+        gsap.to(titleWrapperRef.current, {
+          y: -140,
+          scale: 0.94,
+          opacity: 0.8,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+          },
+        });
+      }
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isReady]);
 
   return (
     <section
@@ -104,7 +110,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
       </div>
 
       {/* Massive Bold Headline: MRH RAFI across center */}
-      <div className="relative z-10 w-full px-4 sm:px-8 md:px-12 my-auto flex flex-col items-center justify-center">
+      <div ref={titleWrapperRef} className="relative z-10 w-full px-4 sm:px-8 md:px-12 my-auto flex flex-col items-center justify-center">
         <h1
           ref={titleRef}
           className="font-display font-black text-[19vw] sm:text-[18vw] md:text-[17vw] lg:text-[16vw] leading-[0.8] tracking-tighter text-[#080713] text-center uppercase select-none drop-shadow-sm transition-transform"

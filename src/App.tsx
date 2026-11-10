@@ -63,7 +63,7 @@ export const App: React.FC = () => {
         <ContinuousSnakeLine />
 
         {/* 01. HERO (Primary Red, MRH RAFI, 3D Capsule, Editorial Italic) */}
-        <HeroSection />
+        <HeroSection isReady={isReady} />
 
         {/* Transitional Intermediate Dark Band (Mobile UI ✦ Native C++ Integration) */}
         <IntermediateBand />

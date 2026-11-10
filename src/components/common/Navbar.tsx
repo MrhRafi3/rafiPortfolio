@@ -100,10 +100,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onContactClick }) => {
           onKeyDown={(e) => e.key === 'Enter' && handleNavClick('#hero')}
         >
           <div className="flex items-center gap-2">
-            <span className="font-display font-black text-xl sm:text-2xl tracking-tight text-white group-hover:text-[#F20D16] transition-colors">
+            <span
+              className={`font-display font-black text-xl sm:text-2xl tracking-tight text-white transition-colors ${
+                !isScrolled ? 'group-hover:text-[#080713]' : 'group-hover:text-[#F20D16]'
+              }`}
+            >
               MRH RAFI
             </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#F20D16] animate-pulse" />
+            <span
+              className={`w-1.5 h-1.5 rounded-full animate-pulse ${
+                !isScrolled ? 'bg-white' : 'bg-[#F20D16]'
+              }`}
+            />
           </div>
           <span className="font-tech text-[8.5px] sm:text-[9.5px] tracking-widest uppercase text-white/70">
             FLUTTER APP DEVELOPER &bull; MOBILE UI
@@ -165,10 +173,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onContactClick }) => {
           {/* CTA */}
           <button
             onClick={onContactClick || (() => handleNavClick('#contact'))}
-            className="group relative inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full bg-[#F20D16] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#d40b13] transition-all duration-300 shadow-md hover:shadow-[0_0_20px_rgba(242,13,22,0.4)]"
+            className={`group relative inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md ${
+              !isScrolled
+                ? 'bg-[#080713] text-white hover:bg-white hover:text-[#080713] border border-white/20 hover:shadow-[0_10px_25px_rgba(0,0,0,0.35)]'
+                : 'bg-[#F20D16] text-white hover:bg-[#d40b13] hover:shadow-[0_0_20px_rgba(242,13,22,0.4)]'
+            }`}
           >
             <span>Let's Talk</span>
-            <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-[#F20D16] transition-colors">
+            <div
+              className={`w-4 h-4 rounded-full flex items-center justify-center transition-colors ${
+                !isScrolled
+                  ? 'bg-white/20 text-white group-hover:bg-[#080713] group-hover:text-white'
+                  : 'bg-white/20 text-white group-hover:bg-white group-hover:text-[#F20D16]'
+              }`}
+            >
               <ArrowUpRight className="w-2.5 h-2.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </div>
           </button>
