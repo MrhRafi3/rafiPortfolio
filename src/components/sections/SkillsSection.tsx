@@ -3,6 +3,8 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SKILL_CATEGORIES } from '../../data/portfolioData';
 import { Layers, Cpu, Database, Wrench, Check } from 'lucide-react';
+import { KeyboardCanvas } from '../canvas/KeyboardCanvas';
+import { Lazy3DViewport } from '../canvas/Lazy3DViewport';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -70,22 +72,39 @@ export const SkillsSection: React.FC = () => {
           </div>
 
           <div className="hidden sm:flex items-center gap-2 text-xs font-tech text-white/50">
-            <span>NO ARBITRARY PERCENTAGES &bull; REAL PROJECT ARTIFACTS</span>
+            <span>MEASURED CAPABILITY &bull; PRODUCTION CODE</span>
           </div>
         </div>
 
-        {/* Title */}
-        <div ref={headingRef} className="max-w-4xl mb-14">
-          <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-white leading-[0.95] uppercase">
-            Technical Stack &amp;
-            <br />
-            <span className="text-[#F20D16] font-serif-italic capitalize font-normal">
-              Systems Foundation
-            </span>
-          </h2>
-          <p className="mt-6 text-sm sm:text-base md:text-lg text-white/70 max-w-2xl leading-relaxed">
-            Every listed skill is actively exercised in production-grade Flutter code, native C++ pipelines, or verified mobile applications.
-          </p>
+        {/* Title & 3D Mechanical Keyboard Integration */}
+        <div ref={headingRef} className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 mb-14">
+          <div className="max-w-3xl">
+            <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-white leading-[0.95] uppercase">
+              Technical Stack &amp;
+              <br />
+              <span className="text-[#F20D16] font-serif-italic capitalize font-normal">
+                Systems Foundation
+              </span>
+            </h2>
+            <p className="mt-6 text-sm sm:text-base md:text-lg text-white/70 max-w-2xl leading-relaxed">
+              Every listed skill is actively exercised in production-grade Flutter code, native C++ pipelines, or verified mobile applications.
+            </p>
+          </div>
+
+          {/* Supporting 3D Mechanical Keyboard */}
+          <div className="w-full lg:w-[380px] xl:w-[440px] h-[220px] sm:h-[260px] shrink-0 self-center lg:self-end">
+            <Lazy3DViewport
+              rootMargin="300px"
+              fallback={
+                <div className="w-full h-full rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col items-center justify-center gap-2 font-tech text-xs text-white/50">
+                  <span className="w-2 h-2 rounded-full bg-[#F20D16] animate-pulse" />
+                  <span>MECHANICAL KEYBOARD // ISOMETRIC VIEW</span>
+                </div>
+              }
+            >
+              <KeyboardCanvas />
+            </Lazy3DViewport>
+          </div>
         </div>
 
         {/* Category Tabs */}

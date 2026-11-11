@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Phone3DCanvas } from '../canvas/Phone3DCanvas';
+import { Lazy3DViewport } from '../canvas/Lazy3DViewport';
 import { PROJECTS } from '../../data/portfolioData';
 import { ArrowUpRight, Sparkles, Smartphone, Eye } from 'lucide-react';
 import { ProjectDetailModal } from './ProjectDetailModal';
@@ -128,10 +129,22 @@ export const Interactive3DPhoneSection: React.FC = () => {
             {/* Right Column: 3D Smartphone Viewport */}
             <div className="lg:col-span-6 relative flex items-center justify-center min-h-[460px] md:min-h-[580px]">
               <div className="w-full max-w-[460px] h-[460px] md:h-[580px]">
-                <Phone3DCanvas
-                  activeProjectImage={activeImage}
-                  appName={activeProject.title}
-                />
+                <Lazy3DViewport
+                  rootMargin="300px"
+                  fallback={
+                    <div className="w-full h-full rounded-3xl bg-white/[0.02] border border-white/10 flex flex-col items-center justify-center gap-3">
+                      <div className="w-48 h-80 rounded-2xl border-2 border-white/15 bg-black/40 flex flex-col items-center justify-center p-4">
+                        <span className="w-2 h-2 rounded-full bg-[#F20D16] animate-pulse mb-2" />
+                        <span className="font-tech text-xs text-white/60 text-center">INITIALIZING 3D ENGINE...</span>
+                      </div>
+                    </div>
+                  }
+                >
+                  <Phone3DCanvas
+                    activeProjectImage={activeImage}
+                    appName={activeProject.title}
+                  />
+                </Lazy3DViewport>
               </div>
             </div>
           </div>

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { HeroCapsuleCanvas } from '../canvas/HeroCapsuleCanvas';
 import { PROFILE } from '../../data/portfolioData';
 import { Smartphone, Cpu, Layers, Sparkles, CheckCircle2 } from 'lucide-react';
 
@@ -73,11 +72,6 @@ export const AboutMeSection: React.FC = () => {
       ref={sectionRef}
       className="relative min-h-screen w-full bg-[#F1EBDD] text-[#080713] py-24 md:py-32 px-6 sm:px-10 md:px-16 overflow-hidden select-none"
     >
-      {/* Floating 3D Capsule in the loop */}
-      <div className="absolute right-8 md:right-28 bottom-20 md:bottom-28 w-[320px] md:w-[460px] h-[280px] md:h-[380px] z-20 pointer-events-auto">
-        <HeroCapsuleCanvas interactive={true} />
-      </div>
-
       <div className="max-w-7xl mx-auto relative z-20">
         {/* Top Section Header */}
         <div className="flex items-center justify-between border-b border-[#080713]/10 pb-4 mb-14">

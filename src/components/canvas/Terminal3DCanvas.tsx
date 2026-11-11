@@ -197,27 +197,53 @@ export const Terminal3DCanvas: React.FC<Terminal3DCanvasProps> = ({ className = 
     window.addEventListener('resize', handleResize);
 
     // Visibility Observer to pause offscreen RAF rendering
+    // Visibility Observer & Animation Loop (Stops RAF completely when offscreen)
     let isVisible = true;
+    let animationId = 0;
+    const clock = new THREE.Clock();
+
+    const startLoop = () => {
+      if (!animationId && isVisible) {
+        animate();
+      }
+    };
+
+    const stopLoop = () => {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = 0;
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopLoop();
+      } else if (isVisible) {
+        startLoop();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         isVisible = entry.isIntersecting;
-        if (isVisible) {
+        if (isVisible && !document.hidden) {
+          startLoop();
           renderer.render(scene, camera);
+        } else {
+          stopLoop();
         }
       },
-      { rootMargin: '150px' }
+      { rootMargin: '100px' }
     );
     observer.observe(container);
 
-    // Initial render pass
-    renderer.render(scene, camera);
-
-    let animationId: number;
-    const clock = new THREE.Clock();
-
     const animate = () => {
+      if (!isVisible) {
+        animationId = 0;
+        return;
+      }
       animationId = requestAnimationFrame(animate);
-      if (!isVisible) return;
 
       const t = clock.getElapsedTime();
 
@@ -234,11 +260,13 @@ export const Terminal3DCanvas: React.FC<Terminal3DCanvasProps> = ({ className = 
 
       renderer.render(scene, camera);
     };
-    animate();
+
+    startLoop();
 
     return () => {
       cancelAnimationFrame(animationId);
       observer.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
       pmrem.dispose();

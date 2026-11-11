@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { ArrowUpRight, ChevronDown, Github, Linkedin, MapPin } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { HeroCapsuleCanvas } from '../canvas/HeroCapsuleCanvas';
+import { HeroLaptopCanvas } from '../canvas/HeroLaptopCanvas';
 import { scrollToSection } from '../../utils/scroll';
 import { PROFILE } from '../../data/portfolioData';
 
@@ -76,13 +76,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, isRead
       ref={sectionRef}
       className="relative min-h-screen w-full bg-[#F20D16] text-white flex flex-col justify-between overflow-hidden pt-24 sm:pt-28 pb-6 select-none"
     >
-      {/* Background Dark Ribbon Stroke that wraps behind the 3D capsule */}
+      {/* Background Dark Ribbon Stroke that wraps behind the 3D laptop */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <svg
           viewBox="0 0 1440 900"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-full object-cover opacity-95"
+          className="w-full h-full object-cover opacity-80"
           preserveAspectRatio="none"
         >
           <path
@@ -95,12 +95,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, isRead
       </div>
 
       {/* Top Metadata Header */}
-      <div ref={tagRef} className="relative z-20 w-full px-6 sm:px-10 md:px-14 flex items-center justify-between text-xs font-tech text-white/80">
+      <div ref={tagRef} className="relative z-20 w-full px-6 sm:px-10 md:px-14 flex items-center justify-between text-xs font-tech text-white/90">
         <div className="flex items-center gap-3">
           <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-          <span className="uppercase tracking-widest font-semibold">{PROFILE.primaryTitle}</span>
+          <span className="uppercase tracking-widest font-semibold">// MOBILE ARCHITECTURE</span>
           <span className="text-white/40">•</span>
-          <span className="hidden sm:inline uppercase tracking-widest text-white/70">{PROFILE.secondaryTitle}</span>
+          <span className="hidden sm:inline uppercase tracking-widest text-white/80">NATIVE SYSTEMS &amp; 60FPS UI</span>
         </div>
 
         <div className="flex items-center gap-2 text-white/90">
@@ -110,18 +110,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, isRead
       </div>
 
       {/* Massive Bold Headline: MRH RAFI across center */}
-      <div ref={titleWrapperRef} className="relative z-10 w-full px-4 sm:px-8 md:px-12 my-auto flex flex-col items-center justify-center">
+      <div ref={titleWrapperRef} className="relative z-10 w-full px-4 sm:px-8 md:px-12 my-auto flex flex-col items-center justify-center min-h-[280px] sm:min-h-0">
         <h1
           ref={titleRef}
-          className="font-display font-black text-[19vw] sm:text-[18vw] md:text-[17vw] lg:text-[16vw] leading-[0.8] tracking-tighter text-[#080713] text-center uppercase select-none drop-shadow-sm transition-transform"
+          className="font-display font-black text-[19vw] sm:text-[18vw] md:text-[17vw] lg:text-[16vw] leading-[0.8] tracking-tighter text-[#F1EBDD] text-center uppercase select-none drop-shadow-[0_15px_35px_rgba(8,7,19,0.35)] transition-transform pb-2"
         >
           MRH RAFI
         </h1>
 
-        {/* 3D Floating Chrome Capsule Mascot overlaying the center with turbine and glass */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-auto z-20">
-          <div className="w-[90vw] max-w-[720px] h-[380px] sm:h-[460px] md:h-[560px]">
-            <HeroCapsuleCanvas interactive={true} />
+        {/* 3D Floating Premium MacBook Pro displaying developer workstation */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-auto z-20 translate-y-[3%] sm:translate-y-[4%]">
+          <div className="w-[92vw] max-w-[820px] h-[300px] sm:h-[480px] md:h-[560px] lg:h-[600px]">
+            <HeroLaptopCanvas interactive={true} />
           </div>
         </div>
       </div>
@@ -172,7 +172,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, isRead
 
             <button
               onClick={onContactClick || (() => scrollToSection('#contact'))}
-              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-white hover:text-[#080713] transition-colors py-2 px-3"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-wider text-white hover:text-[#080713] hover:bg-white transition-all py-3 px-5 rounded-full border border-white/30 backdrop-blur-sm"
             >
               <span>Get In Touch</span>
               <span>&gt;</span>

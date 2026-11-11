@@ -94,7 +94,7 @@ export const ContactFooterSection: React.FC = () => {
           {/* Right Column: Verified Professional Profiles & Metadata */}
           <div className="lg:col-span-5 bg-white/[0.03] backdrop-blur-sm border border-white/10 rounded-3xl p-6 sm:p-8 flex flex-col gap-6">
             <span className="font-tech text-xs font-bold uppercase tracking-widest text-white/70">
-              // VERIFIED PROFILES &amp; LOCATION
+              // LOCATION &amp; PROFILES
             </span>
 
             {/* Location & Timezone Card */}

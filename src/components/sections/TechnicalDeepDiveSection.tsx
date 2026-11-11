@@ -3,6 +3,8 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { TECHNICAL_DEEP_DIVE } from '../../data/portfolioData';
 import { Terminal, Cpu, Clock, Database, CheckCircle2, Copy, Check } from 'lucide-react';
+import { Camera3DCanvas } from '../canvas/Camera3DCanvas';
+import { Lazy3DViewport } from '../canvas/Lazy3DViewport';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -43,7 +45,7 @@ export const TechnicalDeepDiveSection: React.FC = () => {
 
           <div className="hidden sm:flex items-center gap-2 text-xs font-tech text-emerald-400">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>REAL ENGINE SOURCE SAMPLES</span>
+            <span>C++ ENGINE SOURCE SAMPLES</span>
           </div>
         </div>
 
@@ -94,9 +96,24 @@ export const TechnicalDeepDiveSection: React.FC = () => {
             <h3 className="font-display font-bold text-2xl sm:text-3xl text-white mb-4">
               {activeTopic.title}
             </h3>
-            <p className="text-sm sm:text-base text-white/80 leading-relaxed font-normal mb-8">
+            <p className="text-sm sm:text-base text-white/80 leading-relaxed font-normal mb-6">
               {activeTopic.description}
             </p>
+
+            {/* 3D Hardware Optics Sensor Integration - Clean Floating Presentation */}
+            <div className="mb-6 w-full h-[300px] sm:h-[340px] relative flex items-center justify-center">
+              <Lazy3DViewport
+                rootMargin="300px"
+                fallback={
+                  <div className="w-full h-full flex flex-col items-center justify-center gap-2 font-tech text-xs text-white/50">
+                    <span className="w-2 h-2 rounded-full bg-[#F20D16] animate-pulse" />
+                    <span>NATIVE OPTICS // C++ SENSOR COMPUTE</span>
+                  </div>
+                }
+              >
+                <Camera3DCanvas />
+              </Lazy3DViewport>
+            </div>
 
             {/* Key Engineering Pillars */}
             <div className="flex flex-col gap-3">

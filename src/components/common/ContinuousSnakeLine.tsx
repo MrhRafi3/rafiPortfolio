@@ -110,47 +110,47 @@ export const ContinuousSnakeLine: React.FC<ContinuousSnakeLineProps> = ({
     };
 
     const waypoints: Point[] = [
-      // 1. Begin at base of Hero / top of Intermediate Band
-      { x: clampX(0.72), y: hero.top + hero.height * 0.88 },
+      // 1. Begin at base of Hero / top of Intermediate Band (right margin)
+      { x: clampX(0.75), y: hero.top + hero.height * 0.88 },
 
-      // 2. Swoop through Intermediate Band
-      { x: clampX(0.35), y: intermediate.top + intermediate.height * 0.55 },
+      // 2. Swoop cleanly through Intermediate Band (clears left title text)
+      { x: clampX(0.80), y: intermediate.top + intermediate.height * 0.60 },
 
-      // 3. Enter About Me Section (sweeps under editorial headline)
-      { x: clampX(0.22), y: about.top + 220 },
-      { x: clampX(0.55), y: about.top + about.height * 0.42 },
+      // 3. Enter About Me Section (flowing down the right gutter, clearing editorial headline & bio)
+      { x: clampX(0.88), y: about.top + 180 },
+      { x: clampX(0.92), y: about.top + about.height * 0.45 },
+      { x: clampX(0.86), y: about.top + about.height * 0.75 },
+      { x: clampX(0.90), y: about.top + about.height * 0.92 },
 
-      // 4. About Me loop framing the floating 3D capsule on the right
-      { x: clampX(0.85), y: about.top + about.height * 0.70 },
-      { x: clampX(0.70), y: about.top + about.height * 0.88 },
+      // 4. Cross into Technical Skills Section (Framing right margin, well clear of skill cards)
+      { x: clampX(0.94), y: skills.top + 180 },
+      { x: clampX(0.96), y: skills.top + skills.height * 0.50 },
+      { x: clampX(0.91), y: skills.top + skills.height * 0.90 },
 
-      // 5. Cross into Technical Skills Section
-      { x: clampX(0.26), y: skills.top + 160 },
-      { x: clampX(0.72), y: skills.top + skills.height * 0.52 },
-      { x: clampX(0.48), y: skills.top + skills.height * 0.88 },
+      // 5. Selected Projects Showcase (Travels down right margin, framing the gallery)
+      { x: clampX(0.92), y: work.top + workEffectiveHeight * 0.20 },
+      { x: clampX(0.95), y: work.top + workEffectiveHeight * 0.50 },
+      { x: clampX(0.90), y: work.top + workEffectiveHeight * 0.80 },
 
-      // 6. Selected Projects Showcase (Travels across the pinned canvas)
-      { x: clampX(0.32), y: work.top + workEffectiveHeight * 0.18 },
-      { x: clampX(0.74), y: work.top + workEffectiveHeight * 0.50 },
-      { x: clampX(0.38), y: work.top + workEffectiveHeight * 0.82 },
-
-      // 7. Workflow Methodology Stages (01 to 05)
-      { x: clampX(0.76), y: stage1.top + stage1.height * 0.5 },
+      // 6. Workflow Methodology Stages (01 to 05)
+      { x: clampX(0.78), y: stage1.top + stage1.height * 0.5 },
       { x: clampX(0.24), y: stage2.top + stage2.height * 0.5 },
       { x: clampX(0.78), y: stage3.top + stage3.height * 0.5 },
-      { x: clampX(0.22), y: stage4.top + stage4.height * 0.5 },
-      { x: clampX(0.76), y: stage5.top + stage5.height * 0.5 },
+      { x: clampX(0.24), y: stage4.top + stage4.height * 0.5 },
+      { x: clampX(0.78), y: stage5.top + stage5.height * 0.5 },
 
-      // 8. Technical Deep Dive Section
-      { x: clampX(0.30), y: deepDive.top + deepDive.height * 0.45 },
-      { x: clampX(0.68), y: deepDive.top + deepDive.height * 0.85 },
+      // 7. Technical Deep Dive Section (Frames right margin, avoids code viewer and headlines)
+      { x: clampX(0.88), y: deepDive.top + 180 },
+      { x: clampX(0.92), y: deepDive.top + deepDive.height * 0.50 },
+      { x: clampX(0.86), y: deepDive.top + deepDive.height * 0.85 },
 
-      // 9. Interactive 3D Phone Lab
-      { x: clampX(0.75), y: phone3d.top + phone3d.height * 0.5 },
+      // 8. Interactive 3D Phone Lab (Right margin)
+      { x: clampX(0.88), y: phone3d.top + phone3d.height * 0.5 },
 
-      // 10. Contact & Footer Section
-      { x: clampX(0.32), y: contact.top + 340 },
-      { x: clampX(0.50), y: contact.top + contact.height * 0.75 },
+      // 9. Contact & Footer Section (Right gutter, avoids "HAVE A PROJECT IN MIND?" and headlines)
+      { x: clampX(0.88), y: contact.top + 200 },
+      { x: clampX(0.93), y: contact.top + contact.height * 0.55 },
+      { x: clampX(0.82), y: contact.top + contact.height * 0.85 },
     ];
 
     setDimensions({ width, height: docHeight });
@@ -220,47 +220,91 @@ export const ContinuousSnakeLine: React.FC<ContinuousSnakeLineProps> = ({
     };
   }, [calculateWaypoints]);
 
-  // High-performance GSAP scrub tween (zero onUpdate allocations)
+  // Precision Viewport-Locked Stroke Animation
   useEffect(() => {
     const path = pathRef.current;
     const shadowPath = shadowPathRef.current;
     if (!path || !pathData) return;
 
-    let length = 0;
+    let totalLength = 0;
     try {
-      length = path.getTotalLength();
+      totalLength = path.getTotalLength();
     } catch {
       return;
     }
 
-    if (length <= 0) return;
+    if (totalLength <= 0) return;
+
+    // Sample monotonic Y-to-length coordinates for precision viewport tracking
+    const samplesCount = 240;
+    const samples: { len: number; y: number }[] = [];
+    for (let i = 0; i <= samplesCount; i++) {
+      const len = (i / samplesCount) * totalLength;
+      const pt = path.getPointAtLength(len);
+      samples.push({ len, y: pt.y });
+    }
+
+    const getLengthForY = (targetY: number): number => {
+      if (targetY <= samples[0].y) return 0;
+      if (targetY >= samples[samples.length - 1].y) return totalLength;
+
+      let low = 0;
+      let high = samples.length - 1;
+      while (low <= high) {
+        const mid = (low + high) >> 1;
+        if (samples[mid].y < targetY) {
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+      const idx = Math.max(0, low - 1);
+      const s0 = samples[idx];
+      const s1 = samples[Math.min(samples.length - 1, idx + 1)];
+      const dy = s1.y - s0.y;
+      const t = dy > 0.001 ? (targetY - s0.y) / dy : 0;
+      return s0.len + t * (s1.len - s0.len);
+    };
 
     const targets = [path, shadowPath].filter(Boolean);
-    const initialRevealedRatio = 0.035;
-    const startOffset = length * (1 - initialRevealedRatio);
-
-    // Set initial dasharray and offset
     gsap.set(targets, {
-      strokeDasharray: length,
-      strokeDashoffset: startOffset,
+      strokeDasharray: totalLength,
+      strokeDashoffset: totalLength,
     });
 
-    // Native scrubbed tween directly on GSAP ticker - zero per-frame closures/allocations
-    const tween = gsap.to(targets, {
-      strokeDashoffset: 0,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: document.body,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 0.5,
-        invalidateOnRefresh: true,
-      },
+    let strokeRafId = 0;
+    let prevOffset = -1;
+    const updateStroke = () => {
+      if (strokeRafId) return;
+      strokeRafId = requestAnimationFrame(() => {
+        strokeRafId = 0;
+        const scrollY = window.scrollY;
+        const viewHeight = window.innerHeight;
+        const targetY = scrollY + viewHeight * 0.72;
+        const revLen = getLengthForY(targetY);
+        const offset = Math.max(0, totalLength - revLen);
+
+        if (Math.abs(offset - prevOffset) < 0.5) return;
+        prevOffset = offset;
+
+        if (path) path.style.strokeDashoffset = `${offset}px`;
+        if (shadowPath) shadowPath.style.strokeDashoffset = `${offset}px`;
+      });
+    };
+
+    updateStroke();
+
+    const trigger = ScrollTrigger.create({
+      trigger: document.body,
+      start: 'top top',
+      end: 'bottom bottom',
+      onUpdate: updateStroke,
+      onRefresh: updateStroke,
     });
 
     return () => {
-      tween.scrollTrigger?.kill();
-      tween.kill();
+      if (strokeRafId) cancelAnimationFrame(strokeRafId);
+      trigger.kill();
     };
   }, [pathData]);
 
@@ -270,10 +314,9 @@ export const ContinuousSnakeLine: React.FC<ContinuousSnakeLineProps> = ({
   return (
     <svg
       ref={svgRef}
-      className={`absolute top-0 left-0 w-full pointer-events-none select-none z-[5] ${className}`}
+      className={`absolute top-0 left-0 w-full pointer-events-none select-none z-[2] ${className}`}
       style={{
         height: `${dimensions.height}px`,
-        transform: 'translateZ(0)',
       }}
       viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
       fill="none"

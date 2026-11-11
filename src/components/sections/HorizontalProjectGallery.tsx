@@ -81,10 +81,10 @@ export const HorizontalProjectGallery: React.FC = () => {
       <section
         id="work"
         ref={sectionRef}
-        className="relative w-full bg-[#F1EBDD] text-[#080713] overflow-hidden select-none lg:h-screen lg:flex lg:flex-col lg:justify-between"
+        className="relative z-10 w-full bg-[#F1EBDD] text-[#080713] overflow-hidden select-none lg:h-screen lg:flex lg:flex-col lg:justify-between scroll-mt-24"
       >
         {/* Section Top Header */}
-        <div className="relative z-10 w-full px-6 sm:px-10 md:px-16 pt-8 sm:pt-10 lg:pt-5 pb-4 lg:pb-2.5 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#080713]/10 shrink-0">
+        <div className="relative z-20 w-full px-6 sm:px-10 md:px-16 pt-20 sm:pt-24 lg:pt-[88px] xl:pt-[94px] pb-3 lg:pb-3 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#080713]/10 shrink-0">
           <div className="flex flex-col">
             <div className="flex items-center gap-4 mb-2">
               <span className="font-tech text-xs md:text-sm font-bold tracking-widest uppercase text-[#F20D16]">
@@ -92,10 +92,10 @@ export const HorizontalProjectGallery: React.FC = () => {
               </span>
               <span className="text-[#080713]/30">•</span>
               <span className="font-tech text-xs tracking-wider text-[#080713]/60 uppercase">
-                5 VERIFIED APPLICATIONS &bull; FLUTTER / DART / C++
+                PRODUCTION APPLICATIONS &bull; FLUTTER / DART / C++
               </span>
             </div>
-            <h2 className="font-display font-black text-3xl sm:text-4xl md:text-5xl lg:text-[3.2rem] tracking-tight text-[#080713] uppercase leading-[0.92]">
+            <h2 className="font-display font-black text-3xl sm:text-4xl md:text-5xl lg:text-[2.6rem] xl:text-[3rem] tracking-tight text-[#080713] uppercase leading-[0.92]">
               Engineered
               <br />
               <span className="font-serif-italic capitalize text-[#F20D16] font-normal">
@@ -106,7 +106,9 @@ export const HorizontalProjectGallery: React.FC = () => {
 
           <div className="flex flex-col items-start md:items-end gap-2">
             <span className="font-tech text-xs uppercase tracking-widest text-[#080713]/60">
-              PINNED HORIZONTAL SCROLL &bull; CLICK TO INSPECT CASE STUDY
+              <span className="hidden lg:inline">PINNED HORIZONTAL SCROLL &bull; </span>
+              <span className="lg:hidden">FEATURED PROJECTS &bull; </span>
+              SELECT CASE STUDY
             </span>
             <div className="flex items-center gap-2">
               {PROJECTS.map((p, idx) => (
@@ -127,7 +129,7 @@ export const HorizontalProjectGallery: React.FC = () => {
         </div>
 
         {/* Desktop Horizontal Track (>= 1024px) - Clean, independent viewport-framed slides */}
-        <div className="hidden lg:flex flex-1 min-h-0 relative z-10 w-full items-center overflow-hidden">
+        <div className="hidden lg:flex flex-1 min-h-0 relative z-20 w-full items-center overflow-hidden">
           <div
             ref={trackRef}
             className="flex items-center will-change-transform"
@@ -139,7 +141,7 @@ export const HorizontalProjectGallery: React.FC = () => {
                 className="w-screen shrink-0 flex items-center justify-center px-6 sm:px-10 lg:px-16"
               >
                 <div
-                  className="relative w-full max-w-[880px] xl:max-w-[960px] h-[480px] xl:h-[510px] max-h-[calc(100vh-210px)] rounded-3xl bg-[#080713] text-white p-7 xl:p-8 flex flex-col justify-between shadow-2xl border border-white/10 group transition-all duration-300"
+                  className="relative z-20 w-full max-w-[880px] xl:max-w-[960px] h-[450px] xl:h-[490px] max-h-[calc(100vh-250px)] rounded-3xl bg-[#080713] text-white p-7 xl:p-8 flex flex-col justify-between shadow-2xl border border-white/10 group transition-all duration-300"
                 >
                   {/* Card Background Ambient Glow */}
                   <div
@@ -169,12 +171,12 @@ export const HorizontalProjectGallery: React.FC = () => {
                     {/* Left: Project Cover Art Image */}
                     <div
                       onClick={() => setSelectedProject(project)}
-                      className="col-span-6 relative h-[250px] xl:h-[280px] rounded-2xl overflow-hidden bg-black/60 border border-white/10 group-hover:border-[#F20D16]/50 transition-colors cursor-pointer group/img"
+                      className="col-span-6 relative h-[230px] xl:h-[260px] rounded-2xl overflow-hidden bg-black/60 border border-white/10 group-hover:border-[#F20D16]/50 transition-colors cursor-pointer group/img"
                     >
                       <img
                         src={project.coverImage}
                         alt={project.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105"
+                        className="w-full h-full object-cover object-center transition-transform duration-700 group-hover/img:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#080713] via-transparent to-transparent opacity-60" />
 
@@ -255,7 +257,7 @@ export const HorizontalProjectGallery: React.FC = () => {
         </div>
 
         {/* Mobile & Tablet Vertical / Snap Gallery (< 1024px) */}
-        <div className="lg:hidden w-full px-5 sm:px-8 py-10 flex flex-col gap-8 relative z-10">
+        <div className="lg:hidden w-full px-5 sm:px-8 py-10 flex flex-col gap-8 relative z-20">
           {PROJECTS.map((project) => (
             <div
               key={project.id}
@@ -277,7 +279,7 @@ export const HorizontalProjectGallery: React.FC = () => {
                 <img
                   src={project.coverImage}
                   alt={project.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-center"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#080713] via-transparent to-transparent opacity-60" />
                 <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
@@ -328,14 +330,14 @@ export const HorizontalProjectGallery: React.FC = () => {
         </div>
 
         {/* Gallery Base Bar */}
-        <div className="relative z-10 w-full px-6 sm:px-10 md:px-16 py-4 lg:py-3 border-t border-[#080713]/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-tech text-[#080713]/70 shrink-0">
+        <div className="relative z-20 w-full px-6 sm:px-10 md:px-16 py-4 lg:py-3 border-t border-[#080713]/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-tech text-[#080713]/70 shrink-0">
           <div className="flex items-center gap-3">
             <span className="w-2 h-2 rounded-full bg-[#F20D16]" />
-            <span>ALL 5 APPS TESTED ON PHYSICAL HARDWARE</span>
+            <span>5 PRODUCTION CASE STUDIES &bull; REAL DEVICE VERIFIED</span>
           </div>
 
           <div className="flex items-center gap-4">
-            <span>FLUTTER &bull; DART &bull; C++</span>
+            <span>FLUTTER &bull; DART &bull; C++ ARCHITECTURE</span>
             <span className="text-[#080713]/30">•</span>
             <span>NO PLACEHOLDER SCREENS</span>
           </div>

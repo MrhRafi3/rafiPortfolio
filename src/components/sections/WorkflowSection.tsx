@@ -3,8 +3,10 @@ import { ArrowUpRight, CheckCircle2, ChevronRight, Layers, Cpu, Smartphone, Rock
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Terminal3DCanvas } from '../canvas/Terminal3DCanvas';
-import { Phone3DCanvas } from '../canvas/Phone3DCanvas';
+import { StopwatchCanvas } from '../canvas/StopwatchCanvas';
+import { TabletCanvas } from '../canvas/TabletCanvas';
 import { Rocket3DCanvas } from '../canvas/Rocket3DCanvas';
+import { Lazy3DViewport } from '../canvas/Lazy3DViewport';
 import { WORKFLOW_STAGES } from '../../data/portfolioData';
 import { scrollToSection } from '../../utils/scroll';
 
@@ -21,7 +23,7 @@ export const WorkflowSection: React.FC = () => {
       bgClass: 'bg-[#F1EBDD]',
       textClass: 'text-[#080713]',
       numeralClass: 'text-[#F20D16]',
-      visualType: 'wireframe',
+      visualType: 'stopwatch',
     },
     {
       ...WORKFLOW_STAGES[1],
@@ -29,14 +31,14 @@ export const WorkflowSection: React.FC = () => {
       bgClass: 'bg-[#080713]',
       textClass: 'text-white',
       numeralClass: 'text-[#F20D16]',
-      visualType: 'tokens',
+      visualType: 'tablet',
     },
     {
       ...WORKFLOW_STAGES[2],
       id: 'stage-develop',
       bgClass: 'bg-[#F20D16]',
-      textClass: 'text-[#080713]',
-      numeralClass: 'text-[#F1EBDD]',
+      textClass: 'text-[#F1EBDD]',
+      numeralClass: 'text-white/20',
       visualType: 'terminal',
     },
     {
@@ -45,7 +47,7 @@ export const WorkflowSection: React.FC = () => {
       bgClass: 'bg-[#080713]',
       textClass: 'text-white',
       numeralClass: 'text-[#F20D16]',
-      visualType: 'mobile',
+      visualType: 'architecture',
     },
     {
       ...WORKFLOW_STAGES[4],
@@ -84,7 +86,7 @@ export const WorkflowSection: React.FC = () => {
             <div className="flex items-center justify-between border-b border-current/15 pb-4 mb-10">
               <div className="flex items-center gap-4">
                 <span className={`font-tech text-xs md:text-sm font-bold tracking-widest uppercase ${
-                  isRedStage ? 'text-[#080713]' : 'text-[#F20D16]'
+                  isRedStage ? 'text-[#F1EBDD]' : 'text-[#F20D16]'
                 }`}>
                   STAGE {stage.number} / 05
                 </span>
@@ -127,7 +129,7 @@ export const WorkflowSection: React.FC = () => {
                     {stage.deliverables.map((item, dIdx) => (
                       <div key={dIdx} className="flex items-center gap-2 text-xs font-medium">
                         <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 ${
-                          isRedStage ? 'text-[#080713]' : 'text-[#F20D16]'
+                          isRedStage ? 'text-[#F1EBDD]' : 'text-[#F20D16]'
                         }`} />
                         <span>{item}</span>
                       </div>
@@ -147,67 +149,98 @@ export const WorkflowSection: React.FC = () => {
 
                 {/* 3D Visual Content Layer */}
                 <div className="relative z-10 w-full max-w-[480px] h-[340px] md:h-[420px]">
-                  {stage.visualType === 'wireframe' && (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="w-[320px] sm:w-[380px] bg-white rounded-2xl shadow-2xl border border-black/15 p-5 flex flex-col gap-3 transform -rotate-2 hover:rotate-0 transition-transform duration-500 text-[#080713]">
-                        <div className="flex items-center gap-2 border-b border-black/10 pb-2">
-                          <span className="w-2.5 h-2.5 rounded-full bg-[#F20D16]" />
-                          <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-                          <div className="mx-auto w-36 h-3 rounded-full bg-black/5" />
+                  {stage.visualType === 'stopwatch' && (
+                    <Lazy3DViewport
+                      rootMargin="250px"
+                      fallback={
+                        <div className="w-full h-full flex flex-col items-center justify-center gap-2 font-tech text-xs opacity-60">
+                          <span className="w-2 h-2 rounded-full bg-[#F20D16] animate-pulse" />
+                          <span>60FPS CHRONOMETER // LOADING</span>
                         </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="bg-[#F20D16] rounded-xl p-3 text-white flex flex-col justify-between h-24">
-                            <span className="font-display font-bold text-base">Thumb Zone</span>
-                            <div className="w-12 h-1.5 rounded bg-white/40" />
-                          </div>
-                          <div className="bg-[#080713] rounded-xl p-3 text-white flex flex-col justify-between h-24">
-                            <span className="font-display font-bold text-base">State Spec</span>
-                            <div className="w-16 h-1.5 rounded bg-white/40" />
-                          </div>
-                        </div>
-                        <div className="h-12 rounded-xl bg-black/5 flex items-center px-4 justify-between font-tech text-xs">
-                          <span className="text-black/60">USER ERGONOMICS</span>
-                          <span className="font-bold text-[#F20D16]">48dp TAP BOUNDS</span>
-                        </div>
+                      }
+                    >
+                      <div className="w-full h-full relative">
+                        <StopwatchCanvas />
                       </div>
-                    </div>
+                    </Lazy3DViewport>
                   )}
 
-                  {stage.visualType === 'tokens' && (
+                  {stage.visualType === 'tablet' && (
+                    <Lazy3DViewport
+                      rootMargin="250px"
+                      fallback={
+                        <div className="w-full h-full flex flex-col items-center justify-center gap-2 font-tech text-xs opacity-60">
+                          <span className="w-2 h-2 rounded-full bg-[#F20D16] animate-pulse" />
+                          <span>IPAD PRO DESIGN TOKENS // LOADING</span>
+                        </div>
+                      }
+                    >
+                      <div className="w-full h-full relative">
+                        <TabletCanvas />
+                      </div>
+                    </Lazy3DViewport>
+                  )}
+
+                  {stage.visualType === 'terminal' && (
+                    <Lazy3DViewport rootMargin="250px">
+                      <Terminal3DCanvas />
+                    </Lazy3DViewport>
+                  )}
+
+                  {stage.visualType === 'architecture' && (
                     <div className="w-full h-full flex items-center justify-center">
-                      <div className="w-[320px] sm:w-[380px] bg-white/[0.05] backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-2xl flex flex-col gap-4 text-white font-tech">
+                      <div className="w-full max-w-[420px] bg-[#0c0b1a]/90 backdrop-blur-md border border-white/15 rounded-2xl p-6 shadow-2xl flex flex-col gap-3 font-tech text-white">
                         <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                          <span className="text-xs uppercase tracking-wider text-[#F20D16]">DESIGN TOKENS</span>
-                          <span className="text-[10px] text-white/50">FIGMA TO FLUTTER</span>
+                          <span className="text-xs uppercase tracking-wider text-[#F20D16] font-bold">
+                            CLEAN ARCHITECTURE STACK
+                          </span>
+                          <span className="text-[10px] text-emerald-400">ISOLATED BOUNDARIES</span>
                         </div>
-                        <div className="grid grid-cols-3 gap-2">
-                          <div className="p-2.5 rounded-xl bg-[#F20D16] text-white flex flex-col">
-                            <span className="text-[10px]">PRIMARY</span>
-                            <span className="text-xs font-bold">#F20D16</span>
+                        
+                        {/* Layer 1: Presentation */}
+                        <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-between">
+                          <div className="flex items-center gap-2.5">
+                            <span className="w-2 h-2 rounded-full bg-[#F20D16]" />
+                            <span className="text-xs font-bold font-display">PRESENTATION</span>
                           </div>
-                          <div className="p-2.5 rounded-xl bg-white text-[#080713] flex flex-col">
-                            <span className="text-[10px]">CREAM</span>
-                            <span className="text-xs font-bold">#F1EBDD</span>
-                          </div>
-                          <div className="p-2.5 rounded-xl bg-[#080713] text-white border border-white/20 flex flex-col">
-                            <span className="text-[10px]">DARK</span>
-                            <span className="text-xs font-bold">#080713</span>
-                          </div>
+                          <span className="text-[10px] text-white/60">Flutter Widgets &bull; 60fps UI</span>
                         </div>
-                        <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-xs">
-                          <span className="text-white/60 block mb-1">TYPOGRAPHY PAIRING</span>
-                          <span className="text-white font-display font-bold">Syne + Instrument Serif + Mono</span>
+
+                        {/* Layer 2: Domain */}
+                        <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-between">
+                          <div className="flex items-center gap-2.5">
+                            <span className="w-2 h-2 rounded-full bg-amber-400" />
+                            <span className="text-xs font-bold font-display">DOMAIN LOGIC</span>
+                          </div>
+                          <span className="text-[10px] text-white/60">UseCases &bull; State BLoC</span>
+                        </div>
+
+                        {/* Layer 3: Data */}
+                        <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-between">
+                          <div className="flex items-center gap-2.5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                            <span className="text-xs font-bold font-display">DATA ACCESS</span>
+                          </div>
+                          <span className="text-[10px] text-white/60">SQLite &bull; Offline Sync</span>
+                        </div>
+
+                        {/* Layer 4: Native Engine */}
+                        <div className="p-3 rounded-xl bg-[#F20D16]/10 border border-[#F20D16]/30 flex items-center justify-between">
+                          <div className="flex items-center gap-2.5">
+                            <span className="w-2 h-2 rounded-full bg-[#F20D16] animate-pulse" />
+                            <span className="text-xs font-bold font-display text-[#F20D16]">NATIVE C++ RUNTIME</span>
+                          </div>
+                          <span className="text-[10px] text-[#F1EBDD]/80">Dart FFI &bull; Low Latency</span>
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {stage.visualType === 'terminal' && <Terminal3DCanvas />}
-
-                  {stage.visualType === 'mobile' && <Phone3DCanvas />}
-
-                  {stage.visualType === 'rocket' && <Rocket3DCanvas />}
+                  {stage.visualType === 'rocket' && (
+                    <Lazy3DViewport rootMargin="250px">
+                      <Rocket3DCanvas />
+                    </Lazy3DViewport>
+                  )}
                 </div>
               </div>
             </div>
@@ -230,7 +263,7 @@ export const WorkflowSection: React.FC = () => {
                       {isActive && (
                         <span
                           className={`w-1.5 h-1.5 rounded-full ${
-                            isRedStage ? 'bg-[#080713]' : 'bg-[#F20D16]'
+                            isRedStage ? 'bg-[#F1EBDD]' : 'bg-[#F20D16]'
                           }`}
                         />
                       )}
@@ -243,7 +276,7 @@ export const WorkflowSection: React.FC = () => {
               <button
                 onClick={() => scrollToSection('#work')}
                 className={`group flex items-center gap-2 text-xs md:text-sm font-bold uppercase tracking-wider transition-colors ${
-                  isRedStage ? 'hover:text-white' : 'hover:text-[#F20D16]'
+                  isRedStage ? 'hover:text-white text-[#F1EBDD]' : 'hover:text-[#F20D16]'
                 }`}
               >
                 <span>Inspect Verified Projects</span>

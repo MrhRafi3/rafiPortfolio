@@ -68,24 +68,44 @@ export const AnimatedCursor: React.FC = () => {
       ring.style.opacity = '0';
     };
 
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    document.addEventListener('mouseleave', handleMouseLeave, { passive: true });
-
-    // Smooth lerp loop for outer ring
-    let rafId: number;
+    // Smooth lerp loop for outer ring (sleeps when idle)
+    let rafId = 0;
     const render = () => {
-      ringX += (mouseX - ringX) * 0.16;
-      ringY += (mouseY - ringY) * 0.16;
+      const dx = mouseX - ringX;
+      const dy = mouseY - ringY;
 
+      if (Math.abs(dx) < 0.15 && Math.abs(dy) < 0.15) {
+        ringX = mouseX;
+        ringY = mouseY;
+        ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
+        rafId = 0;
+        return;
+      }
+
+      ringX += dx * 0.18;
+      ringY += dy * 0.18;
       ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
       rafId = requestAnimationFrame(render);
     };
-    rafId = requestAnimationFrame(render);
+
+    const wakeLoop = () => {
+      if (!rafId) {
+        rafId = requestAnimationFrame(render);
+      }
+    };
+
+    const handleMouseMoveWithWake = (e: MouseEvent) => {
+      handleMouseMove(e);
+      wakeLoop();
+    };
+
+    window.addEventListener('mousemove', handleMouseMoveWithWake, { passive: true });
+    document.addEventListener('mouseleave', handleMouseLeave, { passive: true });
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousemove', handleMouseMoveWithWake);
       document.removeEventListener('mouseleave', handleMouseLeave);
-      cancelAnimationFrame(rafId);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 

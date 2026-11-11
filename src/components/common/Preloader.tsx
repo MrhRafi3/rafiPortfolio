@@ -66,8 +66,8 @@ export const Preloader: React.FC<PreloaderProps> = ({ onLoaded }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-[999999] bg-[#080713] text-white flex flex-col justify-between p-8 sm:p-12 transition-opacity duration-700 select-none ${
-        progress === 100 ? 'opacity-0 pointer-events-none' : 'opacity-100'
+      className={`fixed inset-0 z-[999999] bg-[#080713] text-white flex flex-col justify-between p-8 sm:p-12 transition-all duration-700 select-none ${
+        progress === 100 ? 'opacity-0 pointer-events-none invisible' : 'opacity-100 visible'
       }`}
     >
       {/* Top Bar */}

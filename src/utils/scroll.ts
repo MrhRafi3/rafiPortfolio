@@ -33,11 +33,18 @@ export function initSmoothScroll(): Lenis {
   lenisInstance.on('scroll', ScrollTrigger.update);
 
   tickerCallback = (time: number) => {
+    if (document.hidden) return;
     lenisInstance?.raf(time * 1000);
   };
 
   gsap.ticker.add(tickerCallback);
   gsap.ticker.lagSmoothing(500, 33);
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      ScrollTrigger.update();
+    }
+  });
 
   return lenisInstance;
 }
