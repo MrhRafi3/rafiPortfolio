@@ -183,7 +183,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
                         : 'border-white/15 opacity-60 hover:opacity-100'
                     }`}
                   >
-                    <img src={shot} alt="thumbnail" className="w-full h-full object-contain p-1" />
+                    <img src={shot} alt="thumbnail" loading="lazy" decoding="async" className="w-full h-full object-contain p-1" />
                   </button>
                 ))}
               </div>
@@ -194,7 +194,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-white/10">
             <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/10">
               <span className="font-tech text-xs uppercase tracking-widest text-[#F20D16] font-bold block mb-2">
-                // PROBLEM & MOTIVATION
+                Problem &amp; Motivation
               </span>
               <p className="text-sm text-white/80 leading-relaxed font-normal">
                 {project.problemStatement}
@@ -205,7 +205,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
               <div className="flex items-center gap-2 mb-2">
                 <Cpu className="w-4 h-4 text-emerald-400" />
                 <span className="font-tech text-xs uppercase tracking-widest text-emerald-400 font-bold">
-                  // PERFORMANCE HIGHLIGHT
+                  Performance Highlight
                 </span>
               </div>
               <p className="text-sm text-white/80 leading-relaxed font-normal">

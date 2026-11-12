@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { loadCachedGLB } from '../../utils/glbCache';
 import { create3DViewerController, ViewerController } from '../../utils/create3DViewerController';
-import { createSoftGroundShadow, GroundShadowResult } from '../../utils/createSoftGroundShadow';
+import { createSoftGroundShadow } from '../../utils/createSoftGroundShadow';
+import { createStudioEnvMap } from '../../utils/createStudioEnvMap';
 
 interface StopwatchCanvasProps {
   className?: string;
@@ -17,69 +18,42 @@ export const StopwatchCanvas: React.FC<StopwatchCanvasProps> = ({ className = ''
     const container = containerRef.current;
     if (!container) return;
 
+    const width = container.clientWidth || 440;
+    const height = container.clientHeight || 400;
+
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      34,
-      container.clientWidth / container.clientHeight,
-      0.1,
-      100
-    );
-    camera.position.set(0, 0, 4.8);
+    const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 100);
+    camera.position.set(0, 0, 5.2);
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
       antialias: true,
       powerPreference: 'high-performance',
     });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.35;
-
+    renderer.toneMappingExposure = 1.3;
     container.appendChild(renderer.domElement);
 
-    // Environment reflection map
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    pmrem.compileEquirectangularShader();
-    const envScene = new THREE.Scene();
-    const envGeo = new THREE.SphereGeometry(10, 16, 16);
-    const envCanvas = document.createElement('canvas');
-    envCanvas.width = 256;
-    envCanvas.height = 128;
-    const ctx = envCanvas.getContext('2d')!;
-    const g = ctx.createLinearGradient(0, 0, 0, 128);
-    g.addColorStop(0, '#FFFFFF');
-    g.addColorStop(0.3, '#707585');
-    g.addColorStop(1, '#080713');
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, 256, 128);
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(30, 20, 80, 20);
-    ctx.fillStyle = '#F20D16';
-    ctx.fillRect(140, 40, 50, 20);
-    const envTex = new THREE.CanvasTexture(envCanvas);
-    envTex.mapping = THREE.EquirectangularReflectionMapping;
-    const envMat = new THREE.MeshBasicMaterial({ map: envTex, side: THREE.BackSide });
-    envScene.add(new THREE.Mesh(envGeo, envMat));
-    scene.environment = pmrem.fromScene(envScene).texture;
+    const studioEnv = createStudioEnvMap(renderer, '#707585', 50);
+    scene.environment = studioEnv.envMap;
 
-    // Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.6);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 3.4);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
     keyLight.position.set(3, 6, 5);
     scene.add(keyLight);
 
-    const redRim = new THREE.DirectionalLight(0xf20d16, 2.8);
+    const redRim = new THREE.DirectionalLight(0xf20d16, 2.5);
     redRim.position.set(-3, -2, -2);
     scene.add(redRim);
 
-    // Ground Shadow (Feathered ellipse with no clipping)
-    const shadow: GroundShadowResult = createSoftGroundShadow({
-      width: 4.4,
-      height: 2.2,
-      opacity: 0.5,
+    const shadow = createSoftGroundShadow({
+      width: 4.0,
+      height: 2.0,
+      opacity: 0.42,
       yPosition: -1.35,
     });
     scene.add(shadow.mesh);
@@ -87,19 +61,18 @@ export const StopwatchCanvas: React.FC<StopwatchCanvasProps> = ({ className = ''
     const stopwatchGroup = new THREE.Group();
     scene.add(stopwatchGroup);
 
-    const baseRotX = 0.22;
-    const baseRotY = -0.35;
-    const baseRotZ = 0.08;
-    stopwatchGroup.rotation.set(baseRotX, baseRotY, baseRotZ);
-    stopwatchGroup.position.set(0, 0.05, 0);
+    const baseRotX = 0.18;
+    const baseRotY = -0.32;
+    const baseRotZ = 0.06;
 
+    let isDisposed = false;
     let mixer: THREE.AnimationMixer | null = null;
-    const clock = new THREE.Clock();
 
     loadCachedGLB('/images/glb_model/stopwatch.glb')
       .then((gltf) => {
-        const model = gltf.scene;
+        if (isDisposed) return;
 
+        const model = gltf.scene;
         const box = new THREE.Box3().setFromObject(model);
         const size = new THREE.Vector3();
         box.getSize(size);
@@ -111,7 +84,7 @@ export const StopwatchCanvas: React.FC<StopwatchCanvasProps> = ({ className = ''
         model.position.sub(center);
 
         const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 2.65 / (maxDim || 1);
+        const scale = 2.45 / (maxDim || 1);
         wrapper.scale.setScalar(scale);
 
         model.traverse((child) => {
@@ -119,13 +92,12 @@ export const StopwatchCanvas: React.FC<StopwatchCanvasProps> = ({ className = ''
             const mesh = child as THREE.Mesh;
             if (mesh.material && (mesh.material as THREE.MeshStandardMaterial).isMeshStandardMaterial) {
               const mat = mesh.material as THREE.MeshStandardMaterial;
-              mat.envMapIntensity = 2.2;
+              mat.envMapIntensity = 2.1;
               mat.needsUpdate = true;
             }
           }
         });
 
-        // Initialize animation clip if present
         if (gltf.animations && gltf.animations.length > 0) {
           mixer = new THREE.AnimationMixer(model);
           const action = mixer.clipAction(gltf.animations[0]);
@@ -136,11 +108,8 @@ export const StopwatchCanvas: React.FC<StopwatchCanvasProps> = ({ className = ''
         stopwatchGroup.add(wrapper);
         controller.requestRender();
       })
-      .catch((err) => {
-        console.warn('StopwatchCanvas load error:', err);
-      });
+      .catch((err) => console.warn('StopwatchCanvas load error:', err));
 
-    // Universal 360° Interaction Controller
     const controller = create3DViewerController({
       container,
       targetGroup: stopwatchGroup,
@@ -153,31 +122,38 @@ export const StopwatchCanvas: React.FC<StopwatchCanvasProps> = ({ className = ''
       sensitivity: 0.0055,
       inertiaDamping: 0.92,
       enableFloating: true,
-      floatAmplitude: 0.035,
-      floatSpeed: 1.2,
-      onRender: () => {
+      floatAmplitude: 0.025,
+      floatSpeed: 1.0,
+      hasActiveAnimation: () => mixer !== null,
+      onResize: (_w, _h, aspect) => {
+        const distanceScale = aspect < 1.0 ? 1.0 / Math.max(aspect, 0.7) : 1;
+        camera.position.set(0, 0, Math.min(7.4, 5.2 * distanceScale));
+      },
+      onRender: (time, delta) => {
         if (mixer) {
-          const delta = clock.getDelta();
           mixer.update(delta);
         }
+        shadow.mesh.scale.set(
+          1 + Math.sin(time) * 0.015,
+          1 + Math.sin(time) * 0.012,
+          1
+        );
       },
     });
 
     controller.start();
     controllerRef.current = controller;
 
-    const hintTimer = setTimeout(() => setHintVisible(false), 6000);
+    const hintTimer = setTimeout(() => setHintVisible(false), 5000);
 
     return () => {
+      isDisposed = true;
       clearTimeout(hintTimer);
       controller.dispose();
       controllerRef.current = null;
-
+      mixer?.stopAllAction();
       shadow.dispose();
-      pmrem.dispose();
-      envTex.dispose();
-      envMat.dispose();
-      envGeo.dispose();
+      studioEnv.dispose();
       renderer.dispose();
 
       if (container.contains(renderer.domElement)) {
@@ -188,14 +164,13 @@ export const StopwatchCanvas: React.FC<StopwatchCanvasProps> = ({ className = ''
 
   return (
     <div ref={containerRef} className={`w-full h-full relative ${className}`}>
-      {/* 360 Interaction Indicator */}
       <div
-        className={`absolute bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#080713]/80 border border-white/15 text-[#F1EBDD] font-tech text-[10px] tracking-wider uppercase backdrop-blur-sm pointer-events-none transition-opacity duration-700 whitespace-nowrap shadow-md flex items-center gap-1.5 ${
+        className={`absolute bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#080713]/85 border border-white/15 text-[#F1EBDD] font-tech text-[10px] tracking-wider uppercase backdrop-blur-sm pointer-events-none transition-opacity duration-700 whitespace-nowrap shadow-md flex items-center gap-1.5 ${
           hintVisible ? 'opacity-90' : 'opacity-0'
         }`}
       >
-        <span className="w-1.5 h-1.5 rounded-full bg-[#F20D16] animate-pulse" />
-        <span>DRAG TO ROTATE 360° // DBL-CLICK RESET</span>
+        <span className="w-1.5 h-1.5 rounded-full bg-[#F20D16]" />
+        <span>Drag to rotate 360°</span>
       </div>
     </div>
   );

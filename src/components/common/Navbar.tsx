@@ -7,57 +7,74 @@ interface NavbarProps {
   onContactClick?: () => void;
 }
 
+const NAV_ITEMS = [
+  { label: 'About', target: '#about', id: 'about' },
+  { label: 'Skills', target: '#skills', id: 'skills' },
+  { label: 'Projects', target: '#work', id: 'work' },
+  { label: 'Process', target: '#process', id: 'process' },
+  { label: 'Engineering', target: '#deep-dive', id: 'deep-dive' },
+];
+
+const SECTION_IDS = ['hero', 'about', 'skills', 'work', 'process', 'deep-dive', 'contact'];
+
 export const Navbar: React.FC<NavbarProps> = ({ onContactClick }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
   const [dhakaTime, setDhakaTime] = useState('');
 
-  // Live real-time Dhaka clock
   useEffect(() => {
     const updateTime = () => {
+      if (document.hidden) return;
       try {
-        const now = new Date();
         const formatter = new Intl.DateTimeFormat('en-US', {
           timeZone: 'Asia/Dhaka',
           hour: '2-digit',
           minute: '2-digit',
-          second: '2-digit',
           hour12: false,
         });
-        setDhakaTime(formatter.format(now));
+        setDhakaTime(formatter.format(new Date()));
       } catch {
         setDhakaTime('DHAKA');
       }
     };
 
     updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
+    const interval = setInterval(updateTime, 15000);
+    document.addEventListener('visibilitychange', updateTime);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', updateTime);
+    };
   }, []);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        setIsScrolled(window.scrollY > 40);
 
-      const sections = ['hero', 'about', 'skills', 'work', 'process', 'deep-dive', 'interactive-3d', 'contact'];
-      for (const section of sections) {
-        const el = document.getElementById(section);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 260 && rect.bottom >= 260) {
-            setActiveSection(section);
-            break;
+        for (const section of SECTION_IDS) {
+          const el = document.getElementById(section);
+          if (el) {
+            const rect = el.getBoundingClientRect();
+            if (rect.top <= 260 && rect.bottom >= 260) {
+              setActiveSection(section);
+              break;
+            }
           }
         }
-      }
+      });
     };
 
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile drawer on escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && mobileMenuOpen) {
@@ -68,15 +85,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onContactClick }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [mobileMenuOpen]);
 
-  const navItems = [
-    { label: 'About', target: '#about', id: 'about' },
-    { label: 'Skills', target: '#skills', id: 'skills' },
-    { label: 'Projects', target: '#work', id: 'work' },
-    { label: 'Process', target: '#process', id: 'process' },
-    { label: 'Deep Dive', target: '#deep-dive', id: 'deep-dive' },
-    { label: '3D Lab', target: '#interactive-3d', id: 'interactive-3d' },
-  ];
-
   const handleNavClick = (target: string) => {
     setMobileMenuOpen(false);
     scrollToSection(target);
@@ -85,13 +93,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onContactClick }) => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 px-5 sm:px-8 md:px-12 py-3.5 md:py-4 flex items-center justify-between ${
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 px-5 sm:px-8 md:px-12 flex items-center justify-between ${
           isScrolled
-            ? 'bg-[#080713]/90 backdrop-blur-md border-b border-white/10 py-3 shadow-xl'
-            : 'bg-transparent'
+            ? 'bg-[#080713]/95 backdrop-blur-md border-b border-white/10 py-3 shadow-xl'
+            : 'bg-transparent py-4'
         }`}
       >
-        {/* Brand Identity */}
         <div
           className="flex flex-col cursor-pointer group"
           onClick={() => handleNavClick('#hero')}
@@ -101,38 +108,39 @@ export const Navbar: React.FC<NavbarProps> = ({ onContactClick }) => {
         >
           <div className="flex items-center gap-2">
             <span
-              className={`font-display font-black text-xl sm:text-2xl tracking-tight text-white transition-colors ${
+              className={`font-display font-black text-lg sm:text-xl tracking-tight text-white transition-colors ${
                 !isScrolled ? 'group-hover:text-[#080713]' : 'group-hover:text-[#F20D16]'
               }`}
             >
-              MRH RAFI
+              {PROFILE.name}
             </span>
             <span
-              className={`w-1.5 h-1.5 rounded-full animate-pulse ${
+              className={`w-1.5 h-1.5 rounded-full ${
                 !isScrolled ? 'bg-white' : 'bg-[#F20D16]'
               }`}
             />
           </div>
-          <span className="font-tech text-[8.5px] sm:text-[9.5px] tracking-widest uppercase text-white/70">
-            FLUTTER APP DEVELOPER &bull; MOBILE UI
+          <span className="font-tech text-[9px] tracking-widest uppercase text-white/75">
+            {PROFILE.primaryTitle}
           </span>
         </div>
 
-        {/* Center Navigation Links */}
         <nav
           className="hidden lg:flex items-center gap-6 xl:gap-8 px-6 py-2 rounded-full bg-black/35 backdrop-blur-md border border-white/10"
           aria-label="Main Navigation"
         >
-          {navItems.map((item) => {
+          {NAV_ITEMS.map((item) => {
             const isActive = activeSection === item.id;
             return (
               <button
-                key={item.label}
+                key={item.id}
                 onClick={() => handleNavClick(item.target)}
-                className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/80 hover:text-white transition-colors relative py-1"
+                className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider transition-colors relative py-1 ${
+                  isActive ? 'text-white' : 'text-white/75 hover:text-white'
+                }`}
               >
                 {isActive && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#F20D16] shadow-[0_0_8px_#F20D16]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#F20D16]" />
                 )}
                 <span>{item.label}</span>
               </button>
@@ -140,22 +148,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onContactClick }) => {
           })}
         </nav>
 
-        {/* Right Status / Clock & Direct Actions */}
-        <div className="hidden sm:flex items-center gap-4 xl:gap-6">
-          {/* Dhaka Local Time indicator */}
-          <div className="hidden xl:flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-tech text-white/75">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>DHAKA {dhakaTime} GMT+6</span>
-          </div>
+        <div className="hidden sm:flex items-center gap-3 xl:gap-5">
+          {dhakaTime && (
+            <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/25 border border-white/10 text-[11px] font-tech text-white/80">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span>DHAKA {dhakaTime}</span>
+            </div>
+          )}
 
-          {/* Social Links */}
           <div className="flex items-center gap-2">
             <a
               href={PROFILE.github}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub Profile"
-              className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white/80 hover:text-white flex items-center justify-center transition-colors border border-white/10"
+              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors border border-white/10"
             >
               <Github className="w-3.5 h-3.5" />
             </a>
@@ -164,38 +171,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onContactClick }) => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn Profile"
-              className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white/80 hover:text-white flex items-center justify-center transition-colors border border-white/10"
+              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors border border-white/10"
             >
               <Linkedin className="w-3.5 h-3.5" />
             </a>
           </div>
 
-          {/* CTA */}
           <button
             onClick={onContactClick || (() => handleNavClick('#contact'))}
-            className={`group relative inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md ${
+            className={`group inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${
               !isScrolled
-                ? 'bg-[#080713] text-white hover:bg-white hover:text-[#080713] border border-white/20 hover:shadow-[0_10px_25px_rgba(0,0,0,0.35)]'
-                : 'bg-[#F20D16] text-white hover:bg-[#d40b13] hover:shadow-[0_0_20px_rgba(242,13,22,0.4)]'
+                ? 'bg-[#080713] text-white hover:bg-white hover:text-[#080713] border border-white/20'
+                : 'bg-[#F20D16] text-white hover:bg-[#d40b13]'
             }`}
           >
-            <span>Let's Talk</span>
-            <div
-              className={`w-4 h-4 rounded-full flex items-center justify-center transition-colors ${
-                !isScrolled
-                  ? 'bg-white/20 text-white group-hover:bg-[#080713] group-hover:text-white'
-                  : 'bg-white/20 text-white group-hover:bg-white group-hover:text-[#F20D16]'
-              }`}
-            >
-              <ArrowUpRight className="w-2.5 h-2.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </div>
+            <span>Let&apos;s Talk</span>
+            <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </button>
         </div>
 
-        {/* Mobile Hamburger Toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+          className="lg:hidden p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition-colors border border-white/15"
           aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={mobileMenuOpen}
         >
@@ -203,25 +200,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onContactClick }) => {
         </button>
       </header>
 
-      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-[#080713]/98 backdrop-blur-2xl flex flex-col justify-between px-8 py-20 lg:hidden"
+          className="fixed inset-0 z-40 bg-[#080713]/98 backdrop-blur-2xl flex flex-col justify-between px-8 py-24 lg:hidden"
           role="dialog"
           aria-modal="true"
         >
           <div className="flex flex-col gap-5 my-auto">
-            <span className="font-tech text-xs tracking-widest uppercase text-[#F20D16]">
-              // NAVIGATION // MRH RAFI
-            </span>
-            {navItems.map((item) => (
+            {NAV_ITEMS.map((item) => (
               <button
-                key={item.label}
+                key={item.id}
                 onClick={() => handleNavClick(item.target)}
                 className="text-left font-display text-3xl sm:text-4xl font-extrabold text-white hover:text-[#F20D16] transition-colors flex items-center justify-between"
               >
                 <span>{item.label}</span>
-                <span className="text-sm font-tech text-white/30">→</span>
+                <span className="text-sm font-tech text-white/40">→</span>
               </button>
             ))}
             <button
@@ -235,8 +228,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onContactClick }) => {
 
           <div className="pt-6 border-t border-white/10 flex flex-col gap-4">
             <div className="flex items-center justify-between text-xs font-tech text-white/60">
-              <span>DHAKA, BANGLADESH</span>
-              <span>{dhakaTime} GMT+6</span>
+              <span>{PROFILE.location}</span>
+              <span>{dhakaTime ? `${dhakaTime} GMT+6` : 'GMT+6'}</span>
             </div>
             <div className="flex items-center gap-4">
               <a

@@ -1,73 +1,30 @@
-export interface ProjectItem {
-  id: string;
-  number: string;
-  title: string;
-  subtitle: string;
-  category: string;
-  year: string;
-  platform: string;
-  role: string;
-  githubUrl?: string;
-  coverImage: string;
-  screenshots: string[];
-  overview: string;
-  developmentDirection?: string;
-  problemStatement: string;
-  verifiedFeatures: string[];
-  techStack: string[];
-  metricsOrHighlight: string;
-  accentColor: string;
-  tags: string[];
-}
-
-export interface SkillCategory {
-  id: string;
-  name: string;
-  headline: string;
-  skills: {
-    name: string;
-    description: string;
-    isPrimary?: boolean;
-    tag?: string;
-  }[];
-}
-
-export interface WorkflowStage {
-  step: string;
-  number: string;
-  title: string;
-  summary: string;
-  deliverables: string[];
-  details: string;
-  badge: string;
-}
+import { ProjectItem, SkillCategory, WorkflowStage } from '../types';
 
 export const PROFILE = {
   name: "MRH RAFI",
   shortName: "RAFI",
   monogram: "MR",
-  primaryTitle: "Flutter App Developer",
-  secondaryTitle: "Mobile UI Engineer",
+  primaryTitle: "App Developer",
+  secondaryTitle: "Mobile UI & Systems",
   location: "Dhaka, Bangladesh",
   timezone: "Asia/Dhaka",
-  coordinates: "23.8103° N, 90.4125° E",
-  status: "OPEN FOR MOBILE APPS & CONTRACTS",
+  status: "Available for Apps & Contracts",
   email: "mrhrafi7@gmail.com",
   github: "https://github.com/MrhRafi3",
   linkedin: "https://www.linkedin.com/in/mrhrafi",
-  positioning: "I build modern mobile experiences with Flutter, combining thoughtful UI engineering, performance-focused development, and attention to detail.",
+  positioning: "Building cross-platform mobile apps with thoughtful UI engineering and native-speed performance.",
   foundation: "C++ and Data Structures & Algorithms",
-  bioHeadline: "DESIGNING EXPERIENCES. ENGINEERING MOBILE APPLICATIONS.",
   biography: [
-    "Independent Flutter developer and mobile UI engineer based in Dhaka, Bangladesh, dedicated to building fluid, tactile cross-platform mobile applications with uncompromising performance.",
-    "Rooted in C++ fundamentals and Data Structures & Algorithms, I approach mobile UI engineering from the metal up—respecting frame-rate budgets (60/120fps), touch ergonomics, and clean architectural boundaries.",
-    "Whether bridging low-latency native image processing via C ABI / FFI or designing responsive, micro-animated mobile interfaces, I focus on authentic usability and production-grade stability."
+    "Independent App Developer based in Dhaka, Bangladesh. I craft cross-platform mobile applications with Flutter and Dart, focused on tactile interfaces and dependable 60–120fps responsiveness.",
+    "Grounded in C++ and Data Structures & Algorithms, I approach app architecture from the ground up—bridging native C ABI/FFI engines when compute demands it and keeping UI boundaries clean."
   ],
-  stats: [
-    { label: "PRIMARY STACK", value: "Flutter & Dart" },
-    { label: "FOUNDATION", value: "C++ & DSA" },
-    { label: "ENGINEERED PROJECTS", value: "5 Verified" },
-    { label: "FRAME TARGET", value: "60–120 FPS" },
+  specs: [
+    { label: "Role", value: "App Developer" },
+    { label: "Primary Stack", value: "Flutter & Dart" },
+    { label: "Systems", value: "C++17 / C ABI FFI" },
+    { label: "Foundation", value: "Data Structures & Algorithms" },
+    { label: "Persistence", value: "SQLite / Offline-First" },
+    { label: "Frame Target", value: "60–120 FPS" }
   ]
 };
 
@@ -76,11 +33,11 @@ export const PROJECTS: ProjectItem[] = [
     id: "clocky",
     number: "01",
     title: "CLOCKY",
-    subtitle: "Luxury Neumorphic World Clock & Alarm Application",
-    category: "Mobile Application / Utility",
+    subtitle: "Neumorphic World Clock, Alarm & Stopwatch",
+    category: "Utility App",
     year: "2025",
-    platform: "Flutter / Android / iOS / Web",
-    role: "Lead Flutter Developer & UI Designer",
+    platform: "Flutter · Android · iOS · Web",
+    role: "Lead Developer & UI Designer",
     githubUrl: "https://github.com/MrhRafi3/Clocky",
     coverImage: "/images/project-covers/clocky-cover.webp",
     screenshots: [
@@ -90,29 +47,29 @@ export const PROJECTS: ProjectItem[] = [
       "/images/clocky/screen-4.png",
       "/images/clocky/screen-5.png"
     ],
-    overview: "A tactile Flutter application engineered to streamline daily time tracking, alarm scheduling, interval countdowns, and world time comparison. Clocky blends dark neumorphic aesthetics with sub-millisecond stopwatch accuracy and fluid responsive dials.",
-    problemStatement: "Standard system clocks frequently lack unified control over multi-timezone comparison, customizable dark neumorphic ergonomics, and low-latency stopwatch lap recording without frame stutter.",
+    overview: "A tactile Flutter timekeeping app uniting dark neumorphic dials, alarm scheduling, interval countdowns, world clock deltas, and a sub-millisecond stopwatch.",
+    problemStatement: "Default system clocks split world time comparison, lap timing, and dark ergonomic controls across cluttered interfaces.",
     verifiedFeatures: [
-      "Digital & Neumorphic Clock with live second tick and high-precision dial rendering.",
-      "Alarm Management system utilizing flutter alarm plugins with persistent audio triggers.",
-      "Precision Stopwatch with sub-millisecond counter and instant lap recording table.",
-      "Countdown Interval Timer with quick interval presets and audio completion cues.",
-      "World Clock supporting multi-city local time delta calculations and time zone comparisons."
+      "Digital and neumorphic analog clock with smooth CustomPainter dial sweeps.",
+      "Persistent alarm scheduling with local notification audio triggers.",
+      "Sub-millisecond stopwatch with instant lap recording.",
+      "Interval countdown timer with quick presets and completion alerts.",
+      "Multi-city world clock with live timezone delta comparison."
     ],
-    techStack: ["Flutter", "Dart", "Provider", "Local Notifications", "Custom Painters", "SharedPreferences"],
-    metricsOrHighlight: "Sub-millisecond stopwatch accuracy with zero dropped frames on mobile hardware.",
+    techStack: ["Flutter", "Dart", "Provider", "CustomPainter", "Local Notifications", "SharedPreferences"],
+    metricsOrHighlight: "Sub-millisecond stopwatch accuracy with zero dropped frames.",
     accentColor: "#F20D16",
-    tags: ["Flutter", "Neumorphism", "Alarm Scheduler", "Stopwatch", "World Clock"]
+    tags: ["Flutter", "Neumorphism", "Stopwatch", "World Clock"]
   },
   {
     id: "expify",
     number: "02",
     title: "EXPIFY BETA",
-    subtitle: "Intuitive Personal Expense & Budget Tracking",
-    category: "Fintech / Utility",
-    year: "2025 - 2026",
-    platform: "Flutter / Mobile UI",
-    role: "Flutter Developer & UX Engineer",
+    subtitle: "Offline-First Personal Expense Tracker",
+    category: "Fintech App",
+    year: "2025–2026",
+    platform: "Flutter · Mobile",
+    role: "App Developer & UX Engineer",
     githubUrl: "https://github.com/MrhRafi3",
     coverImage: "/images/project-covers/expify-cover.webp",
     screenshots: [
@@ -125,29 +82,29 @@ export const PROJECTS: ProjectItem[] = [
       "/images/expify/screen-7.png",
       "/images/expify/screen-8.png"
     ],
-    overview: "A focused personal expense tracking application designed for frictionless transaction logging, dynamic category distribution, and monthly budget clarity. Expify Beta utilizes an offline-first SQLite database architecture to ensure instantaneous feedback.",
-    problemStatement: "Most personal finance apps enforce bloated multi-step dialogs and mandatory online accounts, causing budget logging fatigue and abandonment.",
+    overview: "A privacy-first personal finance app built for rapid transaction logging, category breakdowns, and monthly budget tracking powered by local SQLite.",
+    problemStatement: "Finance apps often force cloud sign-ups and multi-step forms just to record a daily coffee or utility bill.",
     verifiedFeatures: [
-      "Frictionless transaction logging modal requiring under 3 taps to capture any purchase.",
-      "Dynamic categorical breakdowns (Food, Housing, Utilities, Subscriptions, Entertainment).",
-      "Weekly and monthly visual expense summaries with progress gauges.",
-      "Offline-first SQLite/Sqflite architecture ensuring 100% data privacy and instant queries.",
-      "Optimized dark theme with high-contrast numerical readouts for evening expense audits."
+      "Under-3-tap transaction entry modal for fast daily logging.",
+      "Category breakdown across Food, Housing, Utilities, and Subscriptions.",
+      "Weekly and monthly visual expense gauges on custom canvas charts.",
+      "100% offline SQLite/Sqflite persistence for instant local queries.",
+      "High-contrast dark interface tuned for quick evening reviews."
     ],
-    techStack: ["Flutter", "Dart", "SQLite / Sqflite", "State Management", "Custom Canvas Charts"],
-    metricsOrHighlight: "Sub-3-second transaction entry speed with zero network dependency.",
+    techStack: ["Flutter", "Dart", "SQLite", "Custom Canvas Charts", "State Management"],
+    metricsOrHighlight: "Sub-3-second expense entry with zero network dependency.",
     accentColor: "#81b29a",
-    tags: ["Flutter", "SQLite", "Offline-First", "Expense Analytics", "Fintech UI"]
+    tags: ["Flutter", "SQLite", "Offline-First", "Fintech"]
   },
   {
     id: "nomnom",
     number: "03",
     title: "NOMNOM",
-    subtitle: "Multi-Role Food Delivery & Order Ecosystem",
-    category: "E-Commerce / Food Logistics UI",
+    subtitle: "Multi-Role Food Ordering Ecosystem",
+    category: "E-Commerce App",
     year: "2025",
-    platform: "Flutter / Cross-Platform",
-    role: "Full-Lifecycle Mobile Developer",
+    platform: "Flutter · Cross-Platform",
+    role: "App Developer",
     githubUrl: "https://github.com/mrhrafi3/NomNom_food",
     coverImage: "/images/project-covers/nomnom-cover.webp",
     screenshots: [
@@ -161,29 +118,29 @@ export const PROJECTS: ProjectItem[] = [
       "/images/NomNom/offers.png",
       "/images/NomNom/progile-settings.png"
     ],
-    overview: "An end-to-end mobile food ordering application demo exploring four interconnected user touchpoints: customer ordering, kitchen partner queue, rider delivery routing, and administration. Crafted with rich micro-animations, cart drawer state transitions, and intuitive item customization.",
-    problemStatement: "Coordinating multi-stakeholder delivery workflows requires clean state separation so menu updates, cart calculations, and delivery statuses remain synchronised without spaghetti logic.",
+    overview: "An end-to-end food delivery prototype uniting four workflows—customer ordering, kitchen queue, rider routing, and admin—on shared design tokens.",
+    problemStatement: "Multi-role delivery apps break down when menu pricing, cart state, and order milestones live in tangled UI code.",
     verifiedFeatures: [
-      "Customer discovery feed with dish filtering, real-time cart tallying, and discount application.",
-      "Interactive dish customizer with condiment selection and dynamic pricing recalculation.",
-      "Kitchen partner interface concept for queue acknowledgment and preparation toggling.",
-      "Rider routing view with delivery coordinate simulation and status milestone transitions.",
-      "Polished splash screen animation, reactive badges, and fluid drawer physics."
+      "Dish discovery feed with filtering, promo offers, and live cart tallying.",
+      "Interactive dish customizer with add-ons and instant price updates.",
+      "Kitchen partner queue view for order acknowledgment and prep status.",
+      "Rider delivery view with milestone state transitions.",
+      "Fluid splash choreography, cart drawer physics, and reactive badges."
     ],
-    techStack: ["Flutter", "Dart", "REST Client Architecture", "State Management", "JSON Serialization", "Custom Animation Controllers"],
-    metricsOrHighlight: "Architected across 4 distinct role flows with shared design token foundation.",
+    techStack: ["Flutter", "Dart", "REST Architecture", "JSON Serialization", "Custom Animations"],
+    metricsOrHighlight: "4 interconnected role flows built on a unified design system.",
     accentColor: "#f2cc8f",
-    tags: ["Flutter", "Food Delivery", "Multi-Role UI", "Cart Mechanics", "State Machine"]
+    tags: ["Flutter", "Multi-Role", "Cart State", "Animations"]
   },
   {
     id: "alchemy",
     number: "04",
     title: "ALCHEMY",
-    subtitle: "Element Synthesis & Discovery Mobile Puzzle Game",
-    category: "Interactive Game / Puzzle UI",
-    year: "2024 - 2025",
-    platform: "Flutter / Android / iOS",
-    role: "Flutter Game Developer & UI Architect",
+    subtitle: "Bilingual Element Synthesis Puzzle Game",
+    category: "Mobile Game",
+    year: "2024–2025",
+    platform: "Flutter · Android · iOS",
+    role: "Game & UI Developer",
     githubUrl: "https://github.com/MrhRafi3",
     coverImage: "/images/project-covers/alchemy-cover.webp",
     screenshots: [
@@ -193,29 +150,29 @@ export const PROJECTS: ProjectItem[] = [
       "/images/alchemy/element-detail.png",
       "/images/alchemy/profile.png"
     ],
-    overview: "An immersive element combination and synthesis puzzle game built in Flutter. Players combine basic natural elements to discover hundreds of compounds across nature, matter, energy, technology, and cosmic realms, complete with bilingual English/Bengali descriptions and rarity tiers.",
-    problemStatement: "Casual puzzle games often suffer from clunky UI, rigid animations, and lack of localized cultural accessibility for non-English speakers.",
+    overview: "An element combination puzzle game in Flutter where players synthesize compounds across 9 realms with full English and Bengali localization.",
+    problemStatement: "Casual mobile puzzle games rarely pair responsive crafting mechanics with native Bengali lore and cultural accessibility.",
     verifiedFeatures: [
-      "Dynamic combination engine checking ingredient formulas to unlock new elemental compounds.",
-      "Categorized discovery encyclopedia spanning 9 distinct realms (Nature, Energy, Cosmic, Tech, etc.).",
-      "Rarity grading system (Common, Uncommon, Rare, Epic, Legendary) with tiered visual effects.",
-      "Full bilingual support with authentic English and Bengali names and lore descriptions.",
-      "Persistent player collection progress, achievement milestones, and statistics tracking."
+      "Formula-matching synthesis engine unlocking 100+ elemental compounds.",
+      "Categorized encyclopedia spanning 9 realms from Nature to Cosmic.",
+      "Five rarity tiers (Common through Legendary) with distinct visual cues.",
+      "Complete bilingual English and Bengali names and element lore.",
+      "Persistent player progress, milestones, and discovery stats."
     ],
-    techStack: ["Flutter", "Dart", "Provider", "SharedPreferences", "Custom Vector Icons", "Bilingual Localization"],
-    metricsOrHighlight: "Over 100+ craftable element combinations with instant state restoration.",
+    techStack: ["Flutter", "Dart", "Provider", "SharedPreferences", "Bilingual Localization"],
+    metricsOrHighlight: "100+ craftable combinations with bilingual English/Bengali lore.",
     accentColor: "#9d4edd",
-    tags: ["Flutter Game", "Element Synthesis", "Bilingual UI", "Progress Tracking", "Bengali Support"]
+    tags: ["Flutter", "Puzzle Game", "Bilingual", "Bengali"]
   },
   {
     id: "aevique",
     number: "05",
     title: "AEVIQUE",
-    subtitle: "Creative Image Editor with Native C++ Processing Engine",
-    category: "Creative Tool / High-Performance Mobile",
-    year: "2025 - 2026",
-    platform: "Flutter + Native C++ (C ABI FFI)",
-    role: "Systems & Mobile UI Engineer",
+    subtitle: "Photo Editor Powered by a Native C++ Engine",
+    category: "Creative Tool",
+    year: "2025–2026",
+    platform: "Flutter · Native C++ (C ABI FFI)",
+    role: "Systems & App Developer",
     githubUrl: "https://github.com/MrhRafi3/AEVIQUE",
     coverImage: "/images/project-covers/aevique-cover.webp",
     screenshots: [
@@ -226,131 +183,131 @@ export const PROJECTS: ProjectItem[] = [
       "/images/Aevique/Simulator Screenshot - iPhone 16e - 2026-10-22 at 15.12.50.png",
       "/images/Aevique/Simulator Screenshot - iPhone 16e - 2026-10-22 at 15.18.25.png"
     ],
-    overview: "A premier creative photo editing application combining an elegant Flutter mobile user interface with a custom, high-performance native C++ image processing engine (aevique_core). Designed with ivory, champagne gold, and obsidian aesthetic tokens, Aevique executes tonal curve adjustments, HSL color tuning, and convolution filters via a direct C ABI bridge.",
-    developmentDirection: "Engineered specifically to overcome the performance ceiling of Dart VM pixel loops by offloading compute-intensive pixel operations (exposure, highlights, shadows, tone curves, RGB/HSL balancing) to a dedicated C++ engine using strided RGBA8888 memory buffers.",
-    problemStatement: "Mobile photo editors in cross-platform frameworks often lag when processing multi-megapixel images, causing touch latency and slider stutter during real-time adjustments.",
+    overview: "A mobile photo editor pairing a refined Flutter UI with a custom C++ image processing engine (aevique_core) linked via Dart FFI.",
+    developmentDirection: "Built to eliminate Dart VM pixel-loop lag by offloading tone curves, HSL tuning, and convolution filters to strided RGBA8888 C++ buffers.",
+    problemStatement: "Cross-platform photo editors stutter during real-time slider drags when megapixel buffers are processed inside managed VM loops.",
     verifiedFeatures: [
-      "Flutter-powered mobile interface with tactile curve editors, sliders, and live preview rendering.",
-      "Custom C++ native core (aevique_engine.cpp) compiled with CMake and linked via Dart FFI.",
-      "Strided AeviqueImageBuffer memory model with zero unnecessary buffer copies.",
-      "Parametric tone adjustments: Exposure, contrast, highlights, shadows, vibrance, and tint.",
-      "Modular preset architecture and non-destructive image editing state pipeline."
+      "Tactile Flutter editing interface with live preview and precision sliders.",
+      "Custom C++17/20 core compiled with CMake and bound directly via Dart FFI.",
+      "Strided AeviqueImageBuffer model avoiding redundant pixel copies.",
+      "Parametric exposure, contrast, highlights, shadows, vibrance, and tint.",
+      "Non-destructive preset pipeline and modular tone state."
     ],
-    techStack: ["Flutter", "Dart FFI", "C++17 / C++20", "CMake", "Direct C ABI", "SIMD / Strided Memory"],
-    metricsOrHighlight: "Near-instantaneous native C++ pixel processing with zero-overhead FFI data passing.",
+    techStack: ["Flutter", "Dart FFI", "C++17 / C++20", "CMake", "C ABI"],
+    metricsOrHighlight: "Real-time native C++ pixel processing over zero-copy Dart FFI.",
     accentColor: "#d4af37",
-    tags: ["Flutter", "C++ Engine", "Dart FFI", "Image Processing", "Hardware Performance"]
+    tags: ["Flutter", "C++", "Dart FFI", "Image Processing"]
   }
 ];
 
 export const SKILL_CATEGORIES: SkillCategory[] = [
   {
     id: "primary",
-    name: "PRIMARY TECHNOLOGIES",
-    headline: "Mobile Engineering Core",
+    name: "Core Stack",
+    headline: "Mobile App Engineering",
     skills: [
       {
         name: "Flutter",
-        description: "Declarative UI framework for multi-platform applications, custom rendering pipelines, and responsive widget composition.",
+        description: "Declarative cross-platform UI, custom painters, and responsive widget architecture.",
         isPrimary: true,
-        tag: "Core Platform"
+        tag: "Framework"
       },
       {
         name: "Dart",
-        description: "Strongly-typed object-oriented language, asynchronous streams, isolates, and native C FFI integration.",
+        description: "Sound null-safe typing, async streams, isolates, and direct C FFI bindings.",
         isPrimary: true,
-        tag: "Core Language"
+        tag: "Language"
       },
       {
         name: "Mobile UI Engineering",
-        description: "Translating Figma designs into 60/120fps tactile mobile interfaces, touch ergonomics, and fluid micro-animations.",
+        description: "60–120fps touch ergonomics, adaptive spacing, and tactile micro-interactions.",
         isPrimary: true,
-        tag: "Specialization"
+        tag: "Craft"
       },
       {
-        name: "Cross-Platform Development",
-        description: "Adaptive layouts balancing iOS Cupertino feel and Android Material 3 design tokens from single unified codebases.",
+        name: "Cross-Platform Systems",
+        description: "Unified codebases respecting both iOS Cupertino and Android Material conventions.",
         isPrimary: true,
-        tag: "Architecture"
+        tag: "Delivery"
       }
     ]
   },
   {
     id: "foundation",
-    name: "SYSTEMS FOUNDATION",
-    headline: "Underlying Engineering Depth",
+    name: "Systems",
+    headline: "Native & Algorithmic Depth",
     skills: [
       {
-        name: "C++ (Modern C++17/20)",
-        description: "Low-level memory management, RAII, high-throughput pixel manipulation algorithms, and custom native libraries.",
+        name: "C++ (C++17 / C++20)",
+        description: "RAII memory discipline, strided image buffers, and high-throughput native compute.",
         isPrimary: true,
-        tag: "Native Core"
+        tag: "Native"
       },
       {
         name: "Data Structures & Algorithms",
-        description: "Algorithmic efficiency, time/space optimization, graph traversal, caching strategies, and mathematical computing.",
+        description: "Time and space complexity optimization, caching, and predictable data pipelines.",
         isPrimary: true,
-        tag: "Foundation"
+        tag: "Core CS"
       },
       {
-        name: "Native Platform Integration (C ABI / FFI)",
-        description: "Connecting Flutter Dart isolates to compiled native dynamic libraries via foreign function interfaces with strided buffers.",
+        name: "C ABI & Dart FFI",
+        description: "Connecting Flutter isolates to compiled C++ libraries via CMake without buffer bloat.",
         isPrimary: true,
-        tag: "Interoperability"
+        tag: "Interop"
       }
     ]
   },
   {
     id: "architecture",
-    name: "ARCHITECTURE & DATA",
-    headline: "Predictable State & Persistence",
+    name: "Architecture",
+    headline: "State & Local Data",
     skills: [
       {
         name: "Clean Architecture & MVVM",
-        description: "Separation of concerns between Presentation, Domain, and Data layers with clear dependency boundaries.",
-        tag: "Architecture"
+        description: "Clear boundaries across presentation, domain logic, and persistence layers.",
+        tag: "Structure"
       },
       {
         name: "Provider & Riverpod",
-        description: "Reactive state management, scoped state lifecycle, dependency injection, and testable view models.",
-        tag: "State Management"
+        description: "Scoped reactive state management, dependency injection, and testable view models.",
+        tag: "State"
       },
       {
         name: "SQLite / Sqflite",
-        description: "Local relational database persistence, indexing, transactional queries, and offline-first synchronization.",
-        tag: "Persistence"
+        description: "Indexed local relational storage, transactional writes, and offline-first speed.",
+        tag: "Database"
       },
       {
-        name: "REST APIs & JSON Serialization",
-        description: "Resilient HTTP networking, interceptors, exponential backoff retries, and typed DTO models.",
+        name: "REST APIs & JSON",
+        description: "Typed network clients, clean DTO serialization, and resilient error handling.",
         tag: "Networking"
       }
     ]
   },
   {
     id: "workflow",
-    name: "TOOLING & CRAFTSMANSHIP",
-    headline: "Development Standards",
+    name: "Craft",
+    headline: "Tooling & Profiling",
     skills: [
       {
-        name: "Git & GitHub Workflows",
-        description: "Atomic commits, pull request discipline, semantic versioning, and branch management.",
+        name: "Git & GitHub",
+        description: "Clean commit history, feature branching, and disciplined release workflows.",
         tag: "VCS"
       },
       {
         name: "Android Studio & VS Code",
-        description: "Native Android toolchain, Gradle configurations, DevTools profiler, and widget inspector.",
+        description: "Native Android/iOS build toolchains, Gradle setup, and widget inspection.",
         tag: "IDE"
       },
       {
         name: "Widget & Unit Testing",
-        description: "Automated regression prevention, mock service testing, and verified UI behavior assertions.",
-        tag: "Testing"
+        description: "Automated regression tests verifying state logic and critical user flows.",
+        tag: "Quality"
       },
       {
-        name: "Performance & Frame Profiling",
-        description: "Dart DevTools CPU/memory profiling, frame build budget monitoring, and jank elimination.",
-        tag: "Optimization"
+        name: "Frame & Memory Profiling",
+        description: "Dart DevTools timeline analysis to keep animations jank-free on real hardware.",
+        tag: "Performance"
       }
     ]
   }
@@ -360,97 +317,95 @@ export const WORKFLOW_STAGES: WorkflowStage[] = [
   {
     step: "01",
     number: "01",
-    title: "DISCOVER",
-    badge: "REQUIREMENTS & ERGONOMICS",
-    summary: "Deconstructing core product objectives and user touch ergonomics.",
-    details: "I start by analyzing the real mobile problem: understanding user constraints, data flow, offline behavior, and screen density variations. No code is written before defining clear input requirements.",
+    title: "Discover",
+    badge: "Requirements",
+    summary: "Clarifying user flow, offline constraints, and ergonomic priorities before writing code.",
+    details: "Mapping screens, state boundaries, and touch targets across device sizes.",
     deliverables: [
-      "User journey & screen mapping",
-      "Offline vs online data requirements",
-      "System constraints & state boundaries",
-      "Touch target & ergonomic benchmarks"
+      "User flow & screen map",
+      "Offline & online data scope",
+      "State boundary definition",
+      "Touch ergonomics checklist"
     ]
   },
   {
     step: "02",
     number: "02",
-    title: "DESIGN",
-    badge: "TACTILE UI & DESIGN TOKENS",
-    summary: "Architecting intuitive, responsive mobile design tokens.",
-    details: "Translating concepts into a coherent visual system. I structure typography hierarchies, color swatches, component variants, and tactile feedback patterns that feel at home on both iOS and Android.",
+    title: "Design",
+    badge: "Visual System",
+    summary: "Shaping typography, color tokens, and tactile motion for iOS and Android.",
+    details: "Building reusable component variants with strong contrast and clear hierarchy.",
     deliverables: [
-      "Modular design token library",
-      "Fluid micro-interaction specifications",
-      "Responsive layout rules (phone & tablet)",
-      "Dark / Light theme contrast validation"
+      "Design token system",
+      "Micro-interaction timing",
+      "Phone & tablet layouts",
+      "Contrast & legibility check"
     ]
   },
   {
     step: "03",
     number: "03",
-    title: "DEVELOP",
-    badge: "FLUTTER & DART CORE",
-    summary: "Building robust applications with Flutter and modern Dart.",
-    details: "Writing clean, declarative Flutter code with predictable state management (Provider / Riverpod). I prioritize modular widgets, strict typing, reusable view components, and smooth page transitions.",
+    title: "Develop",
+    badge: "Flutter & Dart",
+    summary: "Implementing modular Flutter widgets and predictable reactive state.",
+    details: "Strict typing, clean separation of concerns, and local or network data wiring.",
     deliverables: [
-      "Modular widget architecture",
-      "Reactive state container wiring",
-      "REST & offline persistence integrations",
-      "Accessible semantics & screen-reader keys"
+      "Modular widget tree",
+      "Provider / Riverpod state",
+      "SQLite & REST integration",
+      "Accessible semantics"
     ]
   },
   {
     step: "04",
     number: "04",
-    title: "ENGINEER",
-    badge: "NATIVE INTEGRATION & C++",
-    summary: "Pushing beyond framework limits with native performance bridges.",
-    details: "When high compute is required—such as real-time pixel processing in Aevique—I bridge native C++ engines via Dart FFI and C ABI, orchestrating strided memory buffers with zero unnecessary copies.",
+    title: "Engineer",
+    badge: "Native C++",
+    summary: "Offloading heavy compute to native C++ when the VM isn't enough.",
+    details: "Compiling C++ cores via CMake and exchanging strided buffers over Dart FFI.",
     deliverables: [
-      "C++ native engine compilation (CMake)",
-      "Dart FFI memory-safe C ABI binding",
-      "Zero-copy strided buffer exchange",
-      "Multithreaded background isolate tasks"
+      "CMake native library",
+      "C ABI / Dart FFI bridge",
+      "Zero-copy buffer layout",
+      "Background isolate work"
     ]
   },
   {
     step: "05",
     number: "05",
-    title: "REFINE",
-    badge: "PROFILING & POLISH",
-    summary: "Rigorous profiling on physical devices for 60/120fps perfection.",
-    details: "Testing on real hardware to catch frame drops, memory leaks, and edge-case gestures. I tune widget rebuild costs, verify offline states, and polish touch interactions until every swipe feels natural.",
+    title: "Refine",
+    badge: "Profiling",
+    summary: "Eliminating frame drops, memory bloat, and gesture rough edges on real devices.",
+    details: "Auditing rebuilds in DevTools until every transition holds 60–120fps.",
     deliverables: [
-      "Dart DevTools frame rate profiling",
-      "Widget rebuild optimization",
-      "Real device hardware testing",
-      "Production release build verification"
+      "DevTools frame audit",
+      "Rebuild minimization",
+      "Device gesture QA",
+      "Release build check"
     ]
   }
 ];
 
 export const TECHNICAL_DEEP_DIVE = {
-  headline: "SYSTEMS-LEVEL PERFORMANCE IN A MOBILE RUNTIME",
-  subheadline: "Where Flutter's declarative expressiveness meets native C++ compute efficiency.",
+  headline: "Systems Engineering In A Mobile Runtime",
   topics: [
     {
       id: "aevique-cpp",
-      title: "AEVIQUE NATIVE C++ ENGINE",
-      badge: "C++17 / DART FFI / ZERO-COPY",
-      description: "How Aevique bypasses Flutter's Dart VM rendering bottleneck to achieve instantaneous tone curve adjustments and convolution filters.",
+      title: "Aevique C++ Engine",
+      badge: "C++17 · Dart FFI · Zero-Copy",
+      description: "Offloading megapixel tone curves and convolution filters from the Dart VM to a native C++ core using strided RGBA8888 buffers.",
       highlights: [
-        "Direct C ABI export `aevique_engine.h` and strided memory buffers",
-        "Avoids costly image cloning by directly passing raw pointer pointers through Dart FFI",
-        "Predictable SIMD-ready algorithms for exposure, saturation, highlights, and shadows",
-        "Modular architecture allowing desktop and mobile cross-compilation via CMake"
+        "Direct C ABI header (aevique_engine.h) linked via Dart FFI",
+        "Explicit stride_bytes alignment avoids unnecessary image copies",
+        "Predictable tone, exposure, highlight, and shadow passes",
+        "Cross-compiled cleanly for mobile targets with CMake"
       ],
-      codeSnippet: `// Aevique C ABI Engine Export (aevique_engine.h)
-typedef struct AeviqueImageBuffer {
+      codeSnippet: `typedef struct AeviqueImageBuffer {
     uint8_t* data;
     int32_t width;
     int32_t height;
-    int32_t stride_bytes; /* Explicit stride for memory alignment */
-    int32_t format;       /* AEVIQUE_PIXEL_FORMAT_RGBA8888 */
+    int32_t stride_bytes;
+    int32_t format;
 } AeviqueImageBuffer;
 
 AEVIQUE_API AeviqueStatus aevique_apply_tone_adjustments(
@@ -458,21 +413,21 @@ AEVIQUE_API AeviqueStatus aevique_apply_tone_adjustments(
     AeviqueImageBuffer* dst,
     const AeviqueToneParameters* params
 );`,
-      codeLang: "cpp"
+      codeLang: "cpp",
+      filename: "aevique_engine.h"
     },
     {
       id: "clocky-precision",
-      title: "CLOCKY SUB-MILLISECOND TIMING",
-      badge: "CUSTOM PAINTERS / 60FPS TICK",
-      description: "Delivering microsecond-accurate stopwatch and dial sweeps without triggering costly widget subtree rebuilds.",
+      title: "Clocky Timing Loop",
+      badge: "CustomPainter · 60fps Tick",
+      description: "Rendering smooth stopwatch arcs and live dial ticks without triggering expensive widget subtree rebuilds.",
       highlights: [
-        "Separation of high-frequency ticker from UI widget tree using lightweight ValueNotifiers",
-        "Direct CustomPainter canvas rendering for analog clock sweep and millisecond lap dial",
-        "Hardware-scheduled background alarms using platform-native alarm managers",
-        "Neumorphic drop shadow calculations optimized for mobile GPU rasterization"
+        "Isolates high-frequency tick state via lightweight ValueNotifiers",
+        "Direct Canvas arc rendering inside CustomPainter",
+        "Hardware-scheduled alarms using native platform managers",
+        "GPU-friendly dark neumorphic shadow composition"
       ],
-      codeSnippet: `// Clocky High-Frequency Dial Painter
-class ClockDialPainter extends CustomPainter {
+      codeSnippet: `class ClockDialPainter extends CustomPainter {
   final double progressAngle;
   final Color accentColor;
 
@@ -482,7 +437,7 @@ class ClockDialPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width * 0.46;
-    final sweepPaint = Paint()
+    final paint = Paint()
       ..color = accentColor
       ..strokeWidth = 3.5
       ..style = PaintingStyle.stroke
@@ -490,27 +445,28 @@ class ClockDialPainter extends CustomPainter {
 
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
-      -pi / 2, progressAngle, false, sweepPaint,
+      -pi / 2, progressAngle, false, paint,
     );
   }
+
   @override
   bool shouldRepaint(ClockDialPainter old) => old.progressAngle != progressAngle;
 }`,
-      codeLang: "dart"
+      codeLang: "dart",
+      filename: "clock_dial_painter.dart"
     },
     {
       id: "expify-persistence",
-      title: "EXPIFY OFFLINE-FIRST PERSISTENCE",
-      badge: "SQLITE / SUB-3S TRANSACTION LOG",
-      description: "Zero network latency, 100% private financial tracking with indexed SQLite queries and instant state updates.",
+      title: "Expify Local SQLite",
+      badge: "SQLite · Offline-First",
+      description: "Instant transaction logging and category summaries with indexed local SQLite queries and zero cloud latency.",
       highlights: [
-        "Direct local SQLite database with indexed category and timestamp columns",
-        "Single-modal transaction logging optimized to require fewer than 3 taps",
-        "Instant optimistic UI updates with background asynchronous database commit",
-        "Zero tracking, zero cloud dependencies, ensuring user privacy by design"
+        "Indexed timestamp and category columns for fast monthly aggregations",
+        "Sub-3-tap logging modal with optimistic UI state updates",
+        "Asynchronous background commit keeping touch animations fluid",
+        "100% on-device financial data with zero mandatory sign-in"
       ],
-      codeSnippet: `// Expify Indexed Database Schema & Optimistic Insert
-await db.execute('''
+      codeSnippet: `await db.execute('''
   CREATE TABLE expenses (
     id TEXT PRIMARY KEY,
     amount REAL NOT NULL,
@@ -518,9 +474,11 @@ await db.execute('''
     timestamp INTEGER NOT NULL,
     note TEXT
   );
-  CREATE INDEX idx_expenses_timestamp ON expenses(timestamp DESC);
+  CREATE INDEX idx_expenses_timestamp
+    ON expenses(timestamp DESC);
 ''');`,
-      codeLang: "sql"
+      codeLang: "sql",
+      filename: "schema.sql"
     }
   ]
 };

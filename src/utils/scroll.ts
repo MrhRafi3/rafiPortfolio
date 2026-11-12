@@ -6,17 +6,22 @@ gsap.registerPlugin(ScrollTrigger);
 
 let lenisInstance: Lenis | null = null;
 let tickerCallback: ((time: number) => void) | null = null;
+let visibilityHandler: (() => void) | null = null;
 
-export function initSmoothScroll(): Lenis {
-  if (lenisInstance && !(lenisInstance as any).isDestroyed) {
+export function initSmoothScroll(): Lenis | null {
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (prefersReducedMotion) {
+    return null;
+  }
+
+  if (lenisInstance && !(lenisInstance as unknown as { isDestroyed?: boolean }).isDestroyed) {
     return lenisInstance;
   }
 
-  // Clean up any stale ticker or instance
-  if (tickerCallback) {
-    gsap.ticker.remove(tickerCallback);
-    tickerCallback = null;
-  }
+  destroySmoothScroll();
 
   lenisInstance = new Lenis({
     duration: 0.85,
@@ -29,7 +34,6 @@ export function initSmoothScroll(): Lenis {
     autoRaf: false,
   });
 
-  // Connect Lenis to ScrollTrigger
   lenisInstance.on('scroll', ScrollTrigger.update);
 
   tickerCallback = (time: number) => {
@@ -40,11 +44,12 @@ export function initSmoothScroll(): Lenis {
   gsap.ticker.add(tickerCallback);
   gsap.ticker.lagSmoothing(500, 33);
 
-  document.addEventListener('visibilitychange', () => {
+  visibilityHandler = () => {
     if (!document.hidden) {
       ScrollTrigger.update();
     }
-  });
+  };
+  document.addEventListener('visibilitychange', visibilityHandler);
 
   return lenisInstance;
 }
@@ -53,6 +58,11 @@ export function destroySmoothScroll() {
   if (tickerCallback) {
     gsap.ticker.remove(tickerCallback);
     tickerCallback = null;
+  }
+
+  if (visibilityHandler) {
+    document.removeEventListener('visibilitychange', visibilityHandler);
+    visibilityHandler = null;
   }
 
   if (lenisInstance) {
@@ -71,10 +81,14 @@ export function refreshScrollTriggers() {
 }
 
 export function scrollToSection(target: string) {
-  if (lenisInstance && !(lenisInstance as any).isDestroyed) {
-    lenisInstance.scrollTo(target, { offset: 0, duration: 1.4 });
+  const isReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!isReducedMotion && lenisInstance && !(lenisInstance as unknown as { isDestroyed?: boolean }).isDestroyed) {
+    lenisInstance.scrollTo(target, { offset: 0, duration: 1.1 });
   } else {
     const el = document.querySelector(target);
-    el?.scrollIntoView({ behavior: 'smooth' });
+    el?.scrollIntoView({ behavior: isReducedMotion ? 'auto' : 'smooth' });
   }
 }

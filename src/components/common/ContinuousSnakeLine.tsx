@@ -14,7 +14,6 @@ interface GradientStop {
   color: string;
 }
 
-// Convert an array of 2D waypoints to a smooth C1-continuous cubic Bézier SVG path
 function catmullRomToBezier(points: Point[]): string {
   if (points.length < 2) return '';
   let d = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
@@ -35,164 +34,80 @@ function catmullRomToBezier(points: Point[]): string {
   return d;
 }
 
-interface ContinuousSnakeLineProps {
-  color?: string;
-  className?: string;
-}
-
-export const ContinuousSnakeLine: React.FC<ContinuousSnakeLineProps> = ({
-  color = '#F20D16',
-  className = '',
-}) => {
-  const svgRef = useRef<SVGSVGElement>(null);
+export const ContinuousSnakeLine: React.FC<{ className?: string }> = ({ className = '' }) => {
   const pathRef = useRef<SVGPathElement>(null);
-  const shadowPathRef = useRef<SVGPathElement>(null);
-  const [dimensions, setDimensions] = useState<{ width: number; height: number }>({
-    width: 1440,
-    height: 12000,
-  });
-  const [pathData, setPathData] = useState<string>('');
+  const [dimensions, setDimensions] = useState({ width: 1440, height: 6000 });
+  const [pathData, setPathData] = useState('');
   const [gradientStops, setGradientStops] = useState<GradientStop[]>([
     { offset: '0%', color: '#F1EBDD' },
-    { offset: '7%', color: '#F1EBDD' },
-    { offset: '8%', color: '#F20D16' },
-    { offset: '63%', color: '#F20D16' },
-    { offset: '64%', color: '#F1EBDD' },
-    { offset: '69%', color: '#F1EBDD' },
-    { offset: '70%', color: '#F20D16' },
+    { offset: '15%', color: '#F20D16' },
     { offset: '100%', color: '#F20D16' },
   ]);
 
   const calculateWaypoints = useCallback(() => {
     const width = window.innerWidth;
+    if (width < 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setPathData('');
+      return;
+    }
+
     const docHeight = Math.max(
       document.body.scrollHeight,
       document.documentElement.scrollHeight,
       document.querySelector('main')?.scrollHeight || 0
     );
 
-    const isMobile = width < 768;
-
-    // Helper to get element's absolute top and height relative to document
-    const getElBounds = (id: string) => {
+    const getBounds = (id: string, fallbackTop: number, fallbackHeight: number) => {
       const el = document.getElementById(id);
-      if (!el) return null;
+      if (!el) return { top: fallbackTop, height: fallbackHeight };
       const rect = el.getBoundingClientRect();
-      const top = rect.top + window.scrollY;
-      return { top, height: el.offsetHeight };
+      return { top: rect.top + window.scrollY, height: el.offsetHeight };
     };
 
-    const hero = getElBounds('hero') || { top: 0, height: 900 };
-    const intermediate = getElBounds('intermediate-band') || { top: 900, height: 350 };
-    const about = getElBounds('about') || { top: 1250, height: 1300 };
-    const skills = getElBounds('skills') || { top: 2550, height: 1150 };
-    const work = getElBounds('work') || { top: 3700, height: 1000 };
-    const stage1 = getElBounds('stage-discover') || { top: 7700, height: 900 };
-    const stage2 = getElBounds('stage-design') || { top: 8600, height: 900 };
-    const stage3 = getElBounds('stage-develop') || { top: 9500, height: 900 };
-    const stage4 = getElBounds('stage-engineer') || { top: 10400, height: 900 };
-    const stage5 = getElBounds('stage-refine') || { top: 11300, height: 900 };
-    const deepDive = getElBounds('deep-dive') || { top: 12200, height: 1200 };
-    const phone3d = getElBounds('interactive-3d') || { top: 13400, height: 1000 };
-    const contact = getElBounds('contact') || { top: 14400, height: 1200 };
+    const hero = getBounds('hero', 0, 900);
+    const about = getBounds('about', 900, 900);
+    const skills = getBounds('skills', 1800, 900);
+    const work = getBounds('work', 2700, 900);
+    const process = getBounds('process', 6300, 900);
+    const deepDive = getBounds('deep-dive', 7200, 900);
+    const contact = getBounds('contact', 8100, 900);
 
-    // Distance multiplier for horizontal pin in Work section
     const workEl = document.getElementById('work');
     const pinSpacer = workEl?.closest('.pin-spacer') as HTMLElement | null;
-    const workEffectiveHeight = pinSpacer ? pinSpacer.offsetHeight : (stage1.top - work.top);
+    const workEffectiveHeight = pinSpacer ? pinSpacer.offsetHeight : Math.max(work.height, process.top - work.top);
 
-    // Coordinate clamps for mobile vs desktop
-    const clampX = (ratio: number) => {
-      if (isMobile) {
-        return width * (0.2 + ratio * 0.6); // keep between 20% and 80% on mobile
-      }
-      return width * ratio;
-    };
+    // Keep waypoints along the outer right margin so content & 3D canvases stay unobstructed
+    const xOuter = width * 0.975;
+    const xInner = width * 0.945;
 
     const waypoints: Point[] = [
-      // 1. Begin at base of Hero / top of Intermediate Band (right margin)
-      { x: clampX(0.75), y: hero.top + hero.height * 0.88 },
-
-      // 2. Swoop cleanly through Intermediate Band (clears left title text)
-      { x: clampX(0.80), y: intermediate.top + intermediate.height * 0.60 },
-
-      // 3. Enter About Me Section (flowing down the right gutter, clearing editorial headline & bio)
-      { x: clampX(0.88), y: about.top + 180 },
-      { x: clampX(0.92), y: about.top + about.height * 0.45 },
-      { x: clampX(0.86), y: about.top + about.height * 0.75 },
-      { x: clampX(0.90), y: about.top + about.height * 0.92 },
-
-      // 4. Cross into Technical Skills Section (Framing right margin, well clear of skill cards)
-      { x: clampX(0.94), y: skills.top + 180 },
-      { x: clampX(0.96), y: skills.top + skills.height * 0.50 },
-      { x: clampX(0.91), y: skills.top + skills.height * 0.90 },
-
-      // 5. Selected Projects Showcase (Travels down right margin, framing the gallery)
-      { x: clampX(0.92), y: work.top + workEffectiveHeight * 0.20 },
-      { x: clampX(0.95), y: work.top + workEffectiveHeight * 0.50 },
-      { x: clampX(0.90), y: work.top + workEffectiveHeight * 0.80 },
-
-      // 6. Workflow Methodology Stages (01 to 05)
-      { x: clampX(0.78), y: stage1.top + stage1.height * 0.5 },
-      { x: clampX(0.24), y: stage2.top + stage2.height * 0.5 },
-      { x: clampX(0.78), y: stage3.top + stage3.height * 0.5 },
-      { x: clampX(0.24), y: stage4.top + stage4.height * 0.5 },
-      { x: clampX(0.78), y: stage5.top + stage5.height * 0.5 },
-
-      // 7. Technical Deep Dive Section (Frames right margin, avoids code viewer and headlines)
-      { x: clampX(0.88), y: deepDive.top + 180 },
-      { x: clampX(0.92), y: deepDive.top + deepDive.height * 0.50 },
-      { x: clampX(0.86), y: deepDive.top + deepDive.height * 0.85 },
-
-      // 8. Interactive 3D Phone Lab (Right margin)
-      { x: clampX(0.88), y: phone3d.top + phone3d.height * 0.5 },
-
-      // 9. Contact & Footer Section (Right gutter, avoids "HAVE A PROJECT IN MIND?" and headlines)
-      { x: clampX(0.88), y: contact.top + 200 },
-      { x: clampX(0.93), y: contact.top + contact.height * 0.55 },
-      { x: clampX(0.82), y: contact.top + contact.height * 0.85 },
+      { x: xInner, y: hero.top + hero.height * 0.85 },
+      { x: xOuter, y: about.top + about.height * 0.35 },
+      { x: xInner, y: about.top + about.height * 0.78 },
+      { x: xOuter, y: skills.top + skills.height * 0.45 },
+      { x: xInner, y: work.top + workEffectiveHeight * 0.25 },
+      { x: xOuter, y: work.top + workEffectiveHeight * 0.65 },
+      { x: xInner, y: process.top + process.height * 0.45 },
+      { x: xOuter, y: deepDive.top + deepDive.height * 0.50 },
+      { x: xInner, y: contact.top + contact.height * 0.45 },
+      { x: xOuter, y: contact.top + contact.height * 0.82 },
     ];
 
     setDimensions({ width, height: docHeight });
-    const d = catmullRomToBezier(waypoints);
-    setPathData(d);
-
-    // Background-aware seamless color adaptation gradient
-    const stops: GradientStop[] = [];
-    const addStop = (y: number, stopColor: string) => {
-      const clampedY = Math.max(0, Math.min(docHeight, y));
-      const pct = ((clampedY / docHeight) * 100).toFixed(2) + '%';
-      stops.push({ offset: pct, color: stopColor });
-    };
+    setPathData(catmullRomToBezier(waypoints));
 
     const RED = '#F20D16';
     const CREAM = '#F1EBDD';
-    const transitionZone = 160;
+    const pct = (y: number) => `${((Math.max(0, Math.min(docHeight, y)) / docHeight) * 100).toFixed(2)}%`;
 
-    // 1. Hero is Red background -> Line is Warm Cream (#F1EBDD) for high contrast
-    addStop(0, CREAM);
-    addStop(hero.top + hero.height - transitionZone, CREAM);
-
-    // Seamlessly blend into Red as it enters Intermediate Band & About Me
-    addStop(hero.top + hero.height, RED);
-
-    // 2. IntermediateBand, AboutMe, Skills, Work, Stage1, Stage2 -> Line is Red
-    addStop(stage3.top - transitionZone, RED);
-
-    // Seamlessly blend into Cream as it enters Stage 03 Develop (Red background)
-    addStop(stage3.top + 40, CREAM);
-    addStop(stage3.top + stage3.height - 40, CREAM);
-
-    // Seamlessly blend back to Red as it enters Stage 04 Engineer (Dark background)
-    addStop(stage3.top + stage3.height + transitionZone, RED);
-
-    // 3. Stage 04, Stage 05, Deep Dive, 3D Phone, Contact -> Line is Red
-    addStop(docHeight, RED);
-
-    setGradientStops(stops);
+    setGradientStops([
+      { offset: '0%', color: CREAM },
+      { offset: pct(hero.top + hero.height - 120), color: CREAM },
+      { offset: pct(hero.top + hero.height), color: RED },
+      { offset: '100%', color: RED },
+    ]);
   }, []);
 
-  // Recalculate waypoints on mount, fonts ready, and resize (debounced)
   useEffect(() => {
     calculateWaypoints();
 
@@ -206,13 +121,10 @@ export const ContinuousSnakeLine: React.FC<ContinuousSnakeLineProps> = ({
     };
 
     window.addEventListener('resize', handleResize, { passive: true });
-
-    if (document.fonts) {
-      document.fonts.ready.then(() => {
-        calculateWaypoints();
-        ScrollTrigger.refresh();
-      });
-    }
+    document.fonts?.ready.then(() => {
+      calculateWaypoints();
+      ScrollTrigger.refresh();
+    });
 
     return () => {
       clearTimeout(resizeTimer);
@@ -220,10 +132,8 @@ export const ContinuousSnakeLine: React.FC<ContinuousSnakeLineProps> = ({
     };
   }, [calculateWaypoints]);
 
-  // Precision Viewport-Locked Stroke Animation
   useEffect(() => {
     const path = pathRef.current;
-    const shadowPath = shadowPathRef.current;
     if (!path || !pathData) return;
 
     let totalLength = 0;
@@ -232,31 +142,24 @@ export const ContinuousSnakeLine: React.FC<ContinuousSnakeLineProps> = ({
     } catch {
       return;
     }
-
     if (totalLength <= 0) return;
 
-    // Sample monotonic Y-to-length coordinates for precision viewport tracking
-    const samplesCount = 240;
+    const samplesCount = 120;
     const samples: { len: number; y: number }[] = [];
     for (let i = 0; i <= samplesCount; i++) {
       const len = (i / samplesCount) * totalLength;
-      const pt = path.getPointAtLength(len);
-      samples.push({ len, y: pt.y });
+      samples.push({ len, y: path.getPointAtLength(len).y });
     }
 
     const getLengthForY = (targetY: number): number => {
       if (targetY <= samples[0].y) return 0;
       if (targetY >= samples[samples.length - 1].y) return totalLength;
-
       let low = 0;
       let high = samples.length - 1;
       while (low <= high) {
         const mid = (low + high) >> 1;
-        if (samples[mid].y < targetY) {
-          low = mid + 1;
-        } else {
-          high = mid - 1;
-        }
+        if (samples[mid].y < targetY) low = mid + 1;
+        else high = mid - 1;
       }
       const idx = Math.max(0, low - 1);
       const s0 = samples[idx];
@@ -266,29 +169,22 @@ export const ContinuousSnakeLine: React.FC<ContinuousSnakeLineProps> = ({
       return s0.len + t * (s1.len - s0.len);
     };
 
-    const targets = [path, shadowPath].filter(Boolean);
-    gsap.set(targets, {
+    gsap.set(path, {
       strokeDasharray: totalLength,
       strokeDashoffset: totalLength,
     });
 
-    let strokeRafId = 0;
+    let rafId = 0;
     let prevOffset = -1;
     const updateStroke = () => {
-      if (strokeRafId) return;
-      strokeRafId = requestAnimationFrame(() => {
-        strokeRafId = 0;
-        const scrollY = window.scrollY;
-        const viewHeight = window.innerHeight;
-        const targetY = scrollY + viewHeight * 0.72;
-        const revLen = getLengthForY(targetY);
-        const offset = Math.max(0, totalLength - revLen);
-
-        if (Math.abs(offset - prevOffset) < 0.5) return;
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        const targetY = window.scrollY + window.innerHeight * 0.72;
+        const offset = Math.max(0, totalLength - getLengthForY(targetY));
+        if (Math.abs(offset - prevOffset) < 1) return;
         prevOffset = offset;
-
-        if (path) path.style.strokeDashoffset = `${offset}px`;
-        if (shadowPath) shadowPath.style.strokeDashoffset = `${offset}px`;
+        path.style.strokeDashoffset = `${offset}px`;
       });
     };
 
@@ -303,24 +199,21 @@ export const ContinuousSnakeLine: React.FC<ContinuousSnakeLineProps> = ({
     });
 
     return () => {
-      if (strokeRafId) cancelAnimationFrame(strokeRafId);
+      if (rafId) cancelAnimationFrame(rafId);
       trigger.kill();
     };
   }, [pathData]);
 
-  const isMobile = dimensions.width < 768;
-  const strokeWidth = isMobile ? 36 : dimensions.width < 1024 ? 48 : 56;
+  if (!pathData) return null;
 
   return (
     <svg
-      ref={svgRef}
-      className={`absolute top-0 left-0 w-full pointer-events-none select-none z-[2] ${className}`}
-      style={{
-        height: `${dimensions.height}px`,
-      }}
+      className={`hidden md:block absolute top-0 left-0 w-full pointer-events-none select-none z-[2] opacity-40 ${className}`}
+      style={{ height: `${dimensions.height}px` }}
       viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
     >
       <defs>
         <linearGradient
@@ -336,32 +229,15 @@ export const ContinuousSnakeLine: React.FC<ContinuousSnakeLineProps> = ({
           ))}
         </linearGradient>
       </defs>
-
-      {pathData && (
-        <>
-          {/* Hardware-accelerated soft drop shadow path (zero SVG filter buffer allocation) */}
-          <path
-            ref={shadowPathRef}
-            d={pathData}
-            stroke="rgba(0, 0, 0, 0.28)"
-            strokeWidth={strokeWidth + 6}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            transform="translate(0, 6)"
-            vectorEffect="non-scaling-stroke"
-          />
-          {/* Main Vibrant Organic Stroke with Background-Aware Color Adaptation */}
-          <path
-            ref={pathRef}
-            d={pathData}
-            stroke="url(#continuous-snake-gradient)"
-            strokeWidth={strokeWidth}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            vectorEffect="non-scaling-stroke"
-          />
-        </>
-      )}
+      <path
+        ref={pathRef}
+        d={pathData}
+        stroke="url(#continuous-snake-gradient)"
+        strokeWidth={24}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
+      />
     </svg>
   );
 };

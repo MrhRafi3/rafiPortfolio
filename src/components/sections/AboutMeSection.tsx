@@ -1,63 +1,43 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PROFILE } from '../../data/portfolioData';
-import { Smartphone, Cpu, Layers, Sparkles, CheckCircle2 } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export const AboutMeSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const inspectorRef = useRef<HTMLDivElement>(null);
-  const [highRefreshRate, setHighRefreshRate] = useState(true);
+  const specsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        headlineRef.current,
-        { scale: 0.92, y: 30 },
-        {
-          scale: 1.02,
-          y: -10,
-          ease: 'power1.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-            end: 'center 40%',
-            scrub: 1,
-          },
-        }
-      );
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-      if (contentRef.current) {
-        gsap.from(contentRef.current.children, {
-          y: 35,
-          opacity: 0,
-          stagger: 0.15,
-          duration: 0.9,
+    const ctx = gsap.context(() => {
+      if (headlineRef.current) {
+        gsap.from(headlineRef.current.children, {
+          y: 16,
+          stagger: 0.08,
+          duration: 0.45,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: contentRef.current,
-            start: 'top 80%',
+            trigger: sectionRef.current,
+            start: 'top 85%',
             toggleActions: 'play none none none',
-            invalidateOnRefresh: true,
           },
         });
       }
 
-      if (inspectorRef.current) {
-        gsap.from(inspectorRef.current, {
-          x: 50,
-          opacity: 0,
-          duration: 1.1,
-          ease: 'power3.out',
+      if (specsRef.current) {
+        gsap.from(specsRef.current.children, {
+          y: 14,
+          stagger: 0.05,
+          duration: 0.45,
+          ease: 'power2.out',
           scrollTrigger: {
-            trigger: inspectorRef.current,
-            start: 'top 85%',
+            trigger: specsRef.current,
+            start: 'top 88%',
             toggleActions: 'play none none none',
-            invalidateOnRefresh: true,
           },
         });
       }
@@ -70,187 +50,61 @@ export const AboutMeSection: React.FC = () => {
     <section
       id="about"
       ref={sectionRef}
-      className="relative min-h-screen w-full bg-[#F1EBDD] text-[#080713] py-24 md:py-32 px-6 sm:px-10 md:px-16 overflow-hidden select-none"
+      className="relative min-h-[100svh] lg:h-screen w-full bg-[#F1EBDD] text-[#080713] py-20 lg:py-24 px-6 sm:px-10 md:px-14 flex flex-col justify-between overflow-hidden select-none"
     >
-      <div className="max-w-7xl mx-auto relative z-20">
-        {/* Top Section Header */}
-        <div className="flex items-center justify-between border-b border-[#080713]/10 pb-4 mb-14">
-          <div className="flex items-center gap-4">
-            <span className="font-tech text-xs md:text-sm font-bold tracking-widest uppercase text-[#F20D16]">
-              01 / ABOUT ME
-            </span>
-            <span className="text-[#080713]/30">•</span>
-            <span className="font-tech text-xs tracking-wider text-[#080713]/60 uppercase">
-              ENGINEERING PHILOSOPHY &bull; DHAKA, BD
-            </span>
-          </div>
-
-          <div className="hidden sm:flex items-center gap-2 text-xs font-tech text-[#080713]/70">
-            <span className="w-2 h-2 rounded-full bg-[#F20D16] animate-pulse" />
-            <span>FLUTTER &bull; DART &bull; C++</span>
-          </div>
+      <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between relative z-20">
+        {/* Minimal Section Header */}
+        <div className="flex items-center justify-between border-b border-[#080713]/15 pb-3.5">
+          <span className="font-tech text-xs font-bold tracking-widest uppercase text-[#F20D16]">
+            01 — About
+          </span>
+          <span className="font-tech text-xs tracking-wider text-[#080713]/60 uppercase">
+            {PROFILE.location}
+          </span>
         </div>
 
-        {/* Main Composition: Left Editorial + Right Inspector */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left 8 Cols: Giant Headline & Bio */}
-          <div className="lg:col-span-8 flex flex-col">
-            <div ref={headlineRef} className="origin-left flex flex-col">
-              <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-[#080713] leading-[0.95]">
-                DESIGNING EXPERIENCES.
-              </h2>
-              <div className="mt-2">
-                <span className="font-serif-italic font-normal text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-[#F20D16] leading-[0.9] tracking-tight">
-                  Engineering mobile applications.
-                </span>
-              </div>
-            </div>
+        {/* Editorial Split */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center my-auto py-6">
+          {/* Left: Oversized Typography + Bio */}
+          <div ref={headlineRef} className="lg:col-span-7 min-w-0 flex flex-col">
+            <h2 className="font-display font-black text-[clamp(1.95rem,4.1vw,3.75rem)] tracking-tight text-[#080713] leading-[0.92] uppercase">
+              Designing Experiences.
+            </h2>
+            <p className="font-serif-italic font-normal text-[clamp(2.25rem,4.7vw,4.5rem)] text-[#F20D16] leading-[0.9] tracking-tight mt-1">
+              Engineering mobile apps.
+            </p>
 
-            {/* Editorial Paragraphs */}
-            <div ref={contentRef} className="flex flex-col gap-5 mt-10 max-w-2xl text-sm sm:text-base md:text-lg text-[#080713]/85 leading-relaxed font-normal">
-              {PROFILE.biography.map((paragraph, index) => (
-                <p key={index} className="font-medium">
+            <div className="flex flex-col gap-4 mt-7 max-w-2xl text-sm sm:text-base md:text-[1.06rem] text-[#080713]/85 leading-relaxed">
+              {PROFILE.biography.map((paragraph, idx) => (
+                <p key={idx} className="font-medium">
                   {paragraph}
                 </p>
               ))}
-
-              {/* Core Pillars */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-[#080713]/10">
-                <div className="flex items-start gap-3 p-4 rounded-xl bg-white/70 backdrop-blur-sm border border-[#080713]/10 shadow-sm">
-                  <div className="w-8 h-8 rounded-lg bg-[#F20D16]/10 text-[#F20D16] flex items-center justify-center shrink-0">
-                    <Smartphone className="w-4 h-4" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-display font-bold text-sm text-[#080713]">Touch Ergonomics</span>
-                    <span className="text-xs text-[#080713]/70 mt-0.5">Designed specifically for the thumb zone and real hand postures.</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 p-4 rounded-xl bg-white/70 backdrop-blur-sm border border-[#080713]/10 shadow-sm">
-                  <div className="w-8 h-8 rounded-lg bg-[#080713]/10 text-[#080713] flex items-center justify-center shrink-0">
-                    <Cpu className="w-4 h-4" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-display font-bold text-sm text-[#080713]">C++ Native Engine</span>
-                    <span className="text-xs text-[#080713]/70 mt-0.5">Direct C ABI bridges and strided buffers for high-compute tasks.</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 p-4 rounded-xl bg-white/70 backdrop-blur-sm border border-[#080713]/10 shadow-sm">
-                  <div className="w-8 h-8 rounded-lg bg-[#080713]/10 text-[#080713] flex items-center justify-center shrink-0">
-                    <Layers className="w-4 h-4" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-display font-bold text-sm text-[#080713]">Clean Architecture</span>
-                    <span className="text-xs text-[#080713]/70 mt-0.5">Strict separation of presentation, domain entities, and data sources.</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 p-4 rounded-xl bg-white/70 backdrop-blur-sm border border-[#080713]/10 shadow-sm">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-700 flex items-center justify-center shrink-0">
-                    <Sparkles className="w-4 h-4" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-display font-bold text-sm text-[#080713]">60–120 FPS Target</span>
-                    <span className="text-xs text-[#080713]/70 mt-0.5">Zero dropped frames on standard mobile hardware during gestures.</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
-          {/* Right 4 Cols: Flutter Mobile Architecture Inspector Panel */}
-          <div
-            ref={inspectorRef}
-            className="lg:col-span-4 bg-white/95 border border-[#080713]/15 rounded-2xl p-6 shadow-2xl flex flex-col gap-4 text-xs font-mono"
-          >
-            {/* Window Header */}
-            <div className="flex items-center justify-between border-b border-[#080713]/10 pb-3">
-              <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-[#F20D16]" />
-                <span className="w-3 h-3 rounded-full bg-amber-400" />
-                <span className="w-3 h-3 rounded-full bg-emerald-400" />
-              </div>
-              <div className="flex items-center gap-2 font-tech text-[10px] text-[#080713]/70">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-                <span>FLUTTER DEVTOOLS &bull; LIVE</span>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between text-[#080713]/50 uppercase tracking-widest text-[10px] font-bold">
-              <span>DEVICE INSPECTOR</span>
-              <span>DEV_TARGET // 2026</span>
-            </div>
-
-            {/* Architecture Properties */}
-            <div className="flex flex-col gap-3 py-2 border-b border-[#080713]/10">
-              <div className="flex items-center justify-between">
-                <span className="text-[#080713]/60">Target Framework</span>
-                <span className="font-bold text-[#080713]">Flutter 3.x (Dart 3.x)</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#080713]/60">Core Foundation</span>
-                <span className="font-bold text-[#F20D16]">C++ / Data Structures</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#080713]/60">State Management</span>
-                <span className="font-bold text-[#080713]">Provider / Riverpod</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#080713]/60">Native Interop</span>
-                <span className="font-bold text-[#080713]">Dart FFI / C ABI</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#080713]/60">Offline Storage</span>
-                <span className="font-bold text-[#080713]">SQLite / SharedPreferences</span>
-              </div>
-            </div>
-
-            {/* Frame Budget Indicator */}
-            <div className="flex flex-col gap-2 py-2 border-b border-[#080713]/10">
-              <div className="flex items-center justify-between">
-                <span className="text-[#080713]/60">Frame Budget</span>
-                <span className="font-bold text-emerald-700 font-tech">
-                  {highRefreshRate ? '8.3ms (120Hz)' : '16.6ms (60Hz)'}
+          {/* Right: Clean Typographic Spec Ledger */}
+          <div ref={specsRef} className="lg:col-span-5 flex flex-col border-t border-[#080713]/15">
+            {PROFILE.specs.map((spec) => (
+              <div
+                key={spec.label}
+                className="flex items-baseline justify-between gap-4 py-3.5 sm:py-4 border-b border-[#080713]/15"
+              >
+                <span className="font-tech text-xs uppercase tracking-widest text-[#080713]/55 shrink-0">
+                  {spec.label}
+                </span>
+                <span className="font-display font-bold text-sm sm:text-base md:text-lg text-[#080713] text-right">
+                  {spec.value}
                 </span>
               </div>
-              <div className="w-full bg-[#080713]/5 h-2 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-emerald-500 rounded-full transition-all duration-300"
-                  style={{ width: highRefreshRate ? '90%' : '55%' }}
-                />
-              </div>
-            </div>
-
-            {/* Interactive Toggle */}
-            <div className="flex items-center justify-between py-2">
-              <div className="flex flex-col">
-                <span className="text-[#080713]/80 font-bold">ProMotion Display Mode</span>
-                <span className="text-[10px] text-[#080713]/50">Toggle 120Hz frame target</span>
-              </div>
-              <button
-                onClick={() => setHighRefreshRate(!highRefreshRate)}
-                className={`w-11 h-6 rounded-full transition-colors p-1 flex items-center ${
-                  highRefreshRate ? 'bg-[#F20D16]' : 'bg-[#080713]/20'
-                }`}
-                aria-label="Toggle refresh rate"
-              >
-                <div
-                  className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                    highRefreshRate ? 'translate-x-5' : 'translate-x-0'
-                  }`}
-                />
-              </button>
-            </div>
-
-            {/* Verification Badge */}
-            <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[11px] leading-relaxed text-emerald-900 flex items-start gap-2 font-sans">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-              <span>
-                "All showcased projects are built and verified with real code, real screenshots, and zero fabricated claims."
-              </span>
-            </div>
+            ))}
           </div>
+        </div>
+
+        {/* Bottom Subtle Line */}
+        <div className="pt-3 border-t border-[#080713]/15 flex items-center justify-between text-xs font-tech text-[#080713]/55">
+          <span>60–120 FPS Frame Discipline</span>
+          <span>5 Shipped Case Studies</span>
         </div>
       </div>
     </section>

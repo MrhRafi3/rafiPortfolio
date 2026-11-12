@@ -3,15 +3,17 @@ import React, { useEffect, useRef, useState } from 'react';
 export const AnimatedCursor: React.FC = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLSpanElement>(null);
-
   const [cursorText, setCursorText] = useState('');
   const [isHovering, setIsHovering] = useState(false);
   const [isPointer, setIsPointer] = useState(false);
 
   useEffect(() => {
-    // Only enable custom cursor on fine-pointer devices (desktop)
-    if (!window.matchMedia('(pointer: fine)').matches) return;
+    if (
+      !window.matchMedia('(pointer: fine)').matches ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return;
+    }
 
     const cursor = cursorRef.current;
     const ring = ringRef.current;
@@ -22,54 +24,11 @@ export const AnimatedCursor: React.FC = () => {
     let ringX = -100;
     let ringY = -100;
     let isVisible = false;
-
     let prevHovering = false;
     let prevPointer = false;
     let prevText = '';
-
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-
-      if (!isVisible) {
-        isVisible = true;
-        cursor.style.opacity = '1';
-        ring.style.opacity = '1';
-      }
-
-      // Hardware-accelerated direct transform update (zero React state overhead)
-      cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
-
-      // Check hovered element
-      const target = e.target as HTMLElement | null;
-      if (target) {
-        const interactive = !!target.closest('button, a, input, [data-cursor-interactive]');
-        const customText = target.closest('[data-cursor-text]')?.getAttribute('data-cursor-text') || '';
-
-        const nextHovering = !!customText || interactive;
-        const nextPointer = interactive;
-
-        // Only update React state if state actually changed
-        if (nextHovering !== prevHovering || nextPointer !== prevPointer || customText !== prevText) {
-          prevHovering = nextHovering;
-          prevPointer = nextPointer;
-          prevText = customText;
-
-          setIsHovering(nextHovering);
-          setIsPointer(nextPointer);
-          setCursorText(customText);
-        }
-      }
-    };
-
-    const handleMouseLeave = () => {
-      isVisible = false;
-      cursor.style.opacity = '0';
-      ring.style.opacity = '0';
-    };
-
-    // Smooth lerp loop for outer ring (sleeps when idle)
     let rafId = 0;
+
     const render = () => {
       const dx = mouseX - ringX;
       const dy = mouseY - ringY;
@@ -88,22 +47,50 @@ export const AnimatedCursor: React.FC = () => {
       rafId = requestAnimationFrame(render);
     };
 
-    const wakeLoop = () => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+      if (!isVisible) {
+        isVisible = true;
+        cursor.style.opacity = '1';
+        ring.style.opacity = '1';
+      }
+
+      cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+
+      const target = e.target as HTMLElement | null;
+      if (target) {
+        const interactive = !!target.closest('button, a, input, [data-cursor-interactive]');
+        const customText = target.closest('[data-cursor-text]')?.getAttribute('data-cursor-text') || '';
+        const nextHovering = !!customText || interactive;
+
+        if (nextHovering !== prevHovering || interactive !== prevPointer || customText !== prevText) {
+          prevHovering = nextHovering;
+          prevPointer = interactive;
+          prevText = customText;
+          setIsHovering(nextHovering);
+          setIsPointer(interactive);
+          setCursorText(customText);
+        }
+      }
+
       if (!rafId) {
         rafId = requestAnimationFrame(render);
       }
     };
 
-    const handleMouseMoveWithWake = (e: MouseEvent) => {
-      handleMouseMove(e);
-      wakeLoop();
+    const handleMouseLeave = () => {
+      isVisible = false;
+      cursor.style.opacity = '0';
+      ring.style.opacity = '0';
     };
 
-    window.addEventListener('mousemove', handleMouseMoveWithWake, { passive: true });
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
     document.addEventListener('mouseleave', handleMouseLeave, { passive: true });
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMoveWithWake);
+      window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
       if (rafId) cancelAnimationFrame(rafId);
     };
@@ -111,13 +98,10 @@ export const AnimatedCursor: React.FC = () => {
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[99999] overflow-hidden hidden md:block">
-      {/* Precision Dot */}
       <div
         ref={cursorRef}
         className="fixed top-0 left-0 -ml-1 -mt-1 w-2 h-2 rounded-full bg-white opacity-0 transition-opacity duration-200"
       />
-
-      {/* Trailing Fluid Ring / Bubble */}
       <div
         ref={ringRef}
         className={`fixed top-0 left-0 rounded-full flex items-center justify-center transition-all duration-300 ease-out border border-white/60 opacity-0 ${
@@ -131,7 +115,7 @@ export const AnimatedCursor: React.FC = () => {
         }`}
       >
         {cursorText && (
-          <span ref={textRef} className="font-tech text-[10px] font-bold tracking-widest uppercase">
+          <span className="font-tech text-[10px] font-bold tracking-widest uppercase">
             {cursorText}
           </span>
         )}
