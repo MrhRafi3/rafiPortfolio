@@ -12,15 +12,15 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1794477999.6173081,
-    "seen": 1794478196.875453,
-    "ast_hash": "7023c37fde0b5ff930be1da3b11506c6",
+    "mtime": 1794481398.9983509,
+    "seen": 1794481653.710546,
+    "ast_hash": "5007280ae788eba2f3263117f20e2bc8",
     "semantic_hash": ""
   },
   "src/components/common/AnimatedCursor.tsx": {
-    "mtime": 1794477900.4335992,
-    "seen": 1794478196.875459,
-    "ast_hash": "13146f2688ef8b0435a75b880ffe6a6e",
+    "mtime": 1794481383.8599317,
+    "seen": 1794481653.710552,
+    "ast_hash": "8917124bb02e0824b941f19a550c3fba",
     "semantic_hash": ""
   },
   "src/components/common/ContinuousSnakeLine.tsx": {
@@ -36,15 +36,15 @@
     "semantic_hash": ""
   },
   "src/components/sections/AboutMeSection.tsx": {
-    "mtime": 1794478146.8894181,
-    "seen": 1794478196.8754618,
-    "ast_hash": "547800ca59b1af3e3369fb096b0afb77",
+    "mtime": 1794481435.3474436,
+    "seen": 1794481653.71056,
+    "ast_hash": "f1d9cd915052f6a5e595600e77447917",
     "semantic_hash": ""
   },
   "src/components/sections/ContactFooterSection.tsx": {
-    "mtime": 1794477975.9099846,
-    "seen": 1794478196.875463,
-    "ast_hash": "e62fbd1f9dfb3ca9b345ee3cb9f724e1",
+    "mtime": 1794481453.1918986,
+    "seen": 1794481653.7105632,
+    "ast_hash": "5211d6c57eac883cc687e9293316825b",
     "semantic_hash": ""
   },
   "src/components/sections/HeroSection.tsx": {
@@ -54,39 +54,39 @@
     "semantic_hash": ""
   },
   "src/components/sections/HorizontalProjectGallery.tsx": {
-    "mtime": 1794477958.1211042,
-    "seen": 1794478196.875464,
-    "ast_hash": "a8b4f1d14eb63a78f1c9e4c0d9199a68",
+    "mtime": 1794483689.5216103,
+    "seen": 1794484070.032662,
+    "ast_hash": "7bee1f0e033008b4311606e7152a982f",
     "semantic_hash": ""
   },
   "src/components/sections/ProjectDetailModal.tsx": {
-    "mtime": 1794477978.2049932,
-    "seen": 1794478196.875465,
-    "ast_hash": "1f30317b1c9a59326ead38641c666f1e",
+    "mtime": 1794483694.4563456,
+    "seen": 1794484070.032663,
+    "ast_hash": "2afbed3a7b915717bc3e5c36e9e0d26d",
     "semantic_hash": ""
   },
   "src/components/sections/SkillsSection.tsx": {
-    "mtime": 1794477908.16281,
-    "seen": 1794478196.8754659,
-    "ast_hash": "3a035881c016dad0a7f4243fac22b34e",
+    "mtime": 1794481437.7767296,
+    "seen": 1794481653.710567,
+    "ast_hash": "33883759267d67967520580e856adaf2",
     "semantic_hash": ""
   },
   "src/components/sections/TechnicalDeepDiveSection.tsx": {
-    "mtime": 1794477973.5437996,
-    "seen": 1794478196.875467,
-    "ast_hash": "1730621a6814edfadab60581143cd5aa",
+    "mtime": 1794481448.2622073,
+    "seen": 1794481653.710568,
+    "ast_hash": "3105c55ae2479ca074c944877ac47097",
     "semantic_hash": ""
   },
   "src/components/sections/WorkflowSection.tsx": {
-    "mtime": 1794477960.6180544,
-    "seen": 1794478196.875468,
-    "ast_hash": "94d1924ca56d69c49d6e7102c5fac644",
+    "mtime": 1794481443.4440475,
+    "seen": 1794481653.710569,
+    "ast_hash": "0d723767dd00978b5127f4b3e41c623c",
     "semantic_hash": ""
   },
   "src/data/portfolioData.ts": {
-    "mtime": 1794477851.270184,
-    "seen": 1794478196.875469,
-    "ast_hash": "2cfa07ea78bc3b71b3dc5e8cc064600c",
+    "mtime": 1794483685.2009306,
+    "seen": 1794484070.032667,
+    "ast_hash": "0ff9c8106951f655028318ed41ef1b51",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -453,6 +453,42 @@
     "mtime": 1794477751.3736398,
     "seen": 1794478196.875521,
     "ast_hash": "424c1c2efaa4a6697cf624a4402bb4b1",
+    "semantic_hash": ""
+  },
+  "src/components/common/RevealHeading.tsx": {
+    "mtime": 1794481381.3266158,
+    "seen": 1794481653.710557,
+    "ast_hash": "7b90bfa795e277791b1c68ff730fb2c0",
+    "semantic_hash": ""
+  },
+  "src/components/common/SectionTransitionStreak.tsx": {
+    "mtime": 1794481355.5124068,
+    "seen": 1794481653.710558,
+    "ast_hash": "f25c7f241069162f24b035b6aa569972",
+    "semantic_hash": ""
+  },
+  "src/components/common/TextScramble.tsx": {
+    "mtime": 1794481352.7988684,
+    "seen": 1794481653.710559,
+    "ast_hash": "e2a509008fd07b4535a6e0429926e21c",
+    "semantic_hash": ""
+  },
+  "src/utils/motion.ts": {
+    "mtime": 1794481347.7974129,
+    "seen": 1794481653.710578,
+    "ast_hash": "402b7d269d580ad93349cfcddaf355ce",
+    "semantic_hash": ""
+  },
+  "public/images/project-covers/bomb-run-cover.webp": {
+    "mtime": 1794483938.9312153,
+    "seen": 1794484070.032722,
+    "ast_hash": "24eb2102a717c3eebeaa6800c3f1ee13",
+    "semantic_hash": ""
+  },
+  "public/images/project-covers/sonora-cover.webp": {
+    "mtime": 1794483939.1642687,
+    "seen": 1794484070.032726,
+    "ast_hash": "7d220294a517ef288f3f7f4786d5cf58",
     "semantic_hash": ""
   },
   "package-lock.json": {

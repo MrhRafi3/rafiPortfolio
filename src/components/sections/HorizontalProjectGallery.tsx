@@ -8,6 +8,9 @@ import { ProjectDetailModal } from './ProjectDetailModal';
 import { StopwatchCanvas } from '../canvas/StopwatchCanvas';
 import { Lazy3DViewport } from '../canvas/Lazy3DViewport';
 import { getLenis } from '../../utils/scroll';
+import { RevealHeading } from '../common/RevealHeading';
+import { TextScramble } from '../common/TextScramble';
+import { prefersReducedMotion } from '../../utils/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,6 +19,7 @@ interface ProjectSlideProps {
   clockyView: '3d' | 'image';
   onToggleClockyView: (mode: '3d' | 'image') => void;
   onSelect: (project: ProjectItem) => void;
+  setParallaxRef?: (el: HTMLDivElement | null) => void;
 }
 
 const ProjectEditorialSlide: React.FC<ProjectSlideProps> = ({
@@ -23,6 +27,7 @@ const ProjectEditorialSlide: React.FC<ProjectSlideProps> = ({
   clockyView,
   onToggleClockyView,
   onSelect,
+  setParallaxRef,
 }) => {
   const isClocky = project.id === 'clocky';
   const showStopwatch = isClocky && clockyView === '3d';
@@ -52,19 +57,23 @@ const ProjectEditorialSlide: React.FC<ProjectSlideProps> = ({
             </Lazy3DViewport>
           ) : (
             <>
-              <img
-                src={project.coverImage}
-                alt={project.title}
-                loading="lazy"
-                decoding="async"
-                className="w-full h-full object-cover object-center transition-transform duration-700 group-hover/img:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#080713]/75 via-transparent to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+              <div ref={setParallaxRef} className="w-full h-full will-change-transform">
+                <img
+                  src={project.coverImage}
+                  alt={project.title}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover/img:scale-[1.06]"
+                />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#080713]/75 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between pointer-events-none">
                 <span className="font-tech text-[11px] uppercase tracking-wider text-white bg-[#080713]/75 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15">
-                  {project.screenshots.length} Screenshots
+                  {project.screenshots.length > 0
+                    ? `${project.screenshots.length} Screenshots`
+                    : 'Visual Identity · Case Study'}
                 </span>
-                <span className="w-9 h-9 rounded-full bg-[#F20D16] text-white flex items-center justify-center shadow-lg transition-transform group-hover/img:scale-110">
+                <span className="w-9 h-9 rounded-full bg-[#F20D16] text-white flex items-center justify-center shadow-lg transition-transform duration-300 group-hover/img:scale-110">
                   <ArrowUpRight className="w-4 h-4" />
                 </span>
               </div>
@@ -114,7 +123,7 @@ const ProjectEditorialSlide: React.FC<ProjectSlideProps> = ({
         <div className="flex items-center gap-3 text-xs font-tech uppercase tracking-widest text-[#080713]/60 mb-2">
           <span className="text-[#F20D16] font-bold">{project.number}</span>
           <span>·</span>
-          <span>{project.category}</span>
+          <TextScramble text={project.category} />
           <span>·</span>
           <span>{project.year}</span>
         </div>
@@ -180,6 +189,8 @@ export const HorizontalProjectGallery: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<ScrollTrigger | null>(null);
+  const parallaxRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const lastActiveIdxRef = useRef(0);
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const [activeProjectIdx, setActiveProjectIdx] = useState(0);
   const [clockyView, setClockyView] = useState<'3d' | 'image'>('3d');
@@ -201,14 +212,57 @@ export const HorizontalProjectGallery: React.FC = () => {
   };
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(min-width: 1024px)');
-    if (!mediaQuery.matches) return;
-
     const section = sectionRef.current;
     const track = trackRef.current;
     if (!section || !track) return;
 
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add('(min-width: 1024px)', () => {
+      const reduced = prefersReducedMotion();
+      let entranceObserver: IntersectionObserver | null = null;
+      let entranceScale = reduced ? 1 : 1.05;
+
+      const applyParallax = (progress: number) => {
+        if (reduced) return;
+        const currentSlide = progress * (PROJECTS.length - 1);
+        for (let i = 0; i < PROJECTS.length; i++) {
+          const el = parallaxRefs.current[i];
+          if (!el) continue;
+          const delta = Math.max(-1, Math.min(1, i - currentSlide));
+          const shiftX = -delta * 18;
+          el.style.transform = `translate3d(${shiftX.toFixed(1)}px, 0, 0) scale(${(
+            1.07 * entranceScale
+          ).toFixed(3)})`;
+        }
+      };
+
+      if (!reduced) {
+        applyParallax(0);
+        entranceObserver = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                const obj = { s: 1.05 };
+                gsap.to(obj, {
+                  s: 1,
+                  duration: 0.75,
+                  ease: 'power2.out',
+                  onUpdate: () => {
+                    entranceScale = obj.s;
+                    applyParallax(triggerRef.current?.progress ?? 0);
+                  },
+                });
+                entranceObserver?.disconnect();
+                break;
+              }
+            }
+          },
+          { threshold: 0.15 }
+        );
+        entranceObserver.observe(section);
+      }
+
       const totalSlides = PROJECTS.length;
       const tween = gsap.to(track, {
         x: () => -(window.innerWidth * (totalSlides - 1)),
@@ -226,18 +280,29 @@ export const HorizontalProjectGallery: React.FC = () => {
         invalidateOnRefresh: true,
         refreshPriority: 1,
         onUpdate: (self) => {
+          applyParallax(self.progress);
           const idx = Math.min(
             Math.round(self.progress * (totalSlides - 1)),
             totalSlides - 1
           );
-          setActiveProjectIdx(idx);
+          if (idx !== lastActiveIdxRef.current) {
+            lastActiveIdxRef.current = idx;
+            setActiveProjectIdx(idx);
+          }
         },
       });
-    }, section);
+
+      return () => {
+        entranceObserver?.disconnect();
+        triggerRef.current = null;
+        for (const el of parallaxRefs.current) {
+          if (el) el.style.transform = '';
+        }
+      };
+    });
 
     return () => {
-      triggerRef.current = null;
-      ctx.revert();
+      mm.revert();
     };
   }, []);
 
@@ -254,12 +319,17 @@ export const HorizontalProjectGallery: React.FC = () => {
             <span className="font-tech text-xs font-bold tracking-widest uppercase text-[#F20D16] mb-1">
               03 — Projects
             </span>
-            <h2 className="font-display font-black text-[clamp(1.9rem,3.4vw,3rem)] tracking-tight text-[#080713] uppercase leading-[0.94]">
-              Selected{' '}
-              <span className="font-serif-italic capitalize text-[#F20D16] font-normal">
-                Applications
-              </span>
-            </h2>
+            <RevealHeading
+              as="h2"
+              className="font-display font-black text-[clamp(1.9rem,3.4vw,3rem)] tracking-tight text-[#080713] uppercase leading-[0.94] flex flex-wrap gap-x-3"
+              lines={[
+                { text: 'Selected', className: 'inline-block' },
+                {
+                  text: 'Applications',
+                  className: 'font-serif-italic capitalize text-[#F20D16] font-normal inline-block',
+                },
+              ]}
+            />
           </div>
 
           <div className="flex items-center gap-1.5 flex-wrap">
@@ -286,7 +356,7 @@ export const HorizontalProjectGallery: React.FC = () => {
             className="flex items-center will-change-transform"
             style={{ width: `${PROJECTS.length * 100}vw` }}
           >
-            {PROJECTS.map((project) => (
+            {PROJECTS.map((project, idx) => (
               <div
                 key={project.id}
                 className="w-screen shrink-0 flex items-center justify-center px-10 xl:px-14"
@@ -297,6 +367,9 @@ export const HorizontalProjectGallery: React.FC = () => {
                     clockyView={clockyView}
                     onToggleClockyView={setClockyView}
                     onSelect={setSelectedProject}
+                    setParallaxRef={(el) => {
+                      parallaxRefs.current[idx] = el;
+                    }}
                   />
                 </div>
               </div>
@@ -320,7 +393,7 @@ export const HorizontalProjectGallery: React.FC = () => {
 
         {/* Minimal Base Bar */}
         <div className="relative z-20 max-w-7xl mx-auto w-full px-6 sm:px-10 md:px-14 py-3 border-t border-[#080713]/15 flex items-center justify-between text-xs font-tech text-[#080713]/60 shrink-0">
-          <span>5 Flutter &amp; C++ Applications</span>
+          <span>{PROJECTS.length} Flutter &amp; C++ Applications</span>
           <span>Click any project for screenshots &amp; notes</span>
         </div>
       </section>

@@ -1,67 +1,47 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React, { useState } from 'react';
 import { SKILL_CATEGORIES } from '../../data/portfolioData';
-
-gsap.registerPlugin(ScrollTrigger);
+import { RevealHeading } from '../common/RevealHeading';
+import { TextScramble } from '../common/TextScramble';
 
 export const SkillsSection: React.FC = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState(0);
-
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const ctx = gsap.context(() => {
-      if (headerRef.current) {
-        gsap.from(headerRef.current, {
-          y: 28,
-          opacity: 0,
-          duration: 0.75,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 75%',
-            toggleActions: 'play none none none',
-          },
-        });
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
 
   const currentCategory = SKILL_CATEGORIES[activeTab];
 
   return (
     <section
       id="skills"
-      ref={sectionRef}
       className="relative min-h-[100svh] lg:h-screen w-full bg-[#080713] text-white py-20 lg:py-24 px-6 sm:px-10 md:px-14 flex flex-col justify-between overflow-hidden select-none border-t border-white/5"
     >
       <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between relative z-10">
         {/* Top Tag */}
         <div className="flex items-center justify-between border-b border-white/10 pb-3.5">
-          <span className="font-tech text-xs font-bold tracking-widest uppercase text-[#F20D16]">
-            02 — Skills
-          </span>
-          <span className="font-tech text-xs tracking-wider text-white/50 uppercase">
-            Technical Stack
-          </span>
+          <TextScramble
+            text="02 — Skills"
+            className="font-tech text-xs font-bold tracking-widest uppercase text-[#F20D16]"
+          />
+          <TextScramble
+            text="Technical Stack"
+            className="font-tech text-xs tracking-wider text-white/50 uppercase"
+            delayMs={90}
+          />
         </div>
 
         {/* Heading + Category Tabs */}
-        <div ref={headerRef} className="my-auto py-5 flex flex-col gap-7">
+        <div className="my-auto py-5 flex flex-col gap-7">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
             <div>
-              <h2 className="font-display font-black text-[clamp(2.3rem,5vw,4.5rem)] tracking-tight text-white leading-[0.92] uppercase">
-                Technical Stack &amp;
-                <br />
-                <span className="text-[#F20D16] font-serif-italic capitalize font-normal">
-                  Systems Foundation
-                </span>
-              </h2>
+              <RevealHeading
+                as="h2"
+                className="font-display font-black text-[clamp(2.3rem,5vw,4.5rem)] tracking-tight text-white leading-[0.92] uppercase"
+                lines={[
+                  { text: 'Technical Stack &' },
+                  {
+                    text: 'Systems Foundation',
+                    className: 'text-[#F20D16] font-serif-italic capitalize font-normal',
+                  },
+                ]}
+              />
             </div>
 
             {/* Category Selector */}

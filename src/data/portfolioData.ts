@@ -197,6 +197,60 @@ export const PROJECTS: ProjectItem[] = [
     metricsOrHighlight: "Real-time native C++ pixel processing over zero-copy Dart FFI.",
     accentColor: "#d4af37",
     tags: ["Flutter", "C++", "Dart FFI", "Image Processing"]
+  },
+  {
+    id: "bomb-run",
+    number: "06",
+    title: "MEOW ESCAPE: BOMB RUN",
+    subtitle: "Neon Arcade Survival Dodge Game",
+    category: "Game Development",
+    year: "2025–2026",
+    platform: "Flutter · Android · iOS · Web",
+    role: "Game & UI Developer",
+    githubUrl: "https://github.com/MrhRafi3/MEOW-ESCAPE-BOMB-RUN",
+    coverImage: "/images/project-covers/bomb-run-cover.webp",
+    screenshots: [],
+    overview: "A retro-modern Flutter arcade survival game where players guide a cat mascot across a bounded playfield to dodge falling bombs, collect temporary Shield and Slow-Mo power-ups, and push for high scores.",
+    developmentDirection: "Built around a 60Hz ChangeNotifier game loop (16ms tick), responsive 480px-capped playfield pillar-boxing, and continuous horizontal drag plus left/right tap controls.",
+    problemStatement: "Frame-rate-sensitive mobile dodge games quickly feel unresponsive when touch drags stutter, hitboxes ignore safe areas, or difficulty scales unevenly.",
+    verifiedFeatures: [
+      "Continuous horizontal drag and left/right tap-zone movement clamped cleanly within playfield bounds.",
+      "60Hz ChangeNotifier game loop spawning falling hazards alongside timed 5-second Shield and Slow-Mo power-ups.",
+      "Progressive difficulty scaling (+0.05 fall speed per dodged object) with 3-heart lives and AABB collision detection.",
+      "Pause modal with backdrop blur, 3-second resume countdown, and pause-aware power-up timer preservation.",
+      "Local high-score persistence, sound effect toggles, and animated shooting-star canvas backdrop via SharedPreferences and Audioplayers."
+    ],
+    techStack: ["Flutter", "Dart", "ChangeNotifier", "CustomPainter", "Audioplayers", "SharedPreferences"],
+    metricsOrHighlight: "60Hz tick loop, 5-second Shield & Slow-Mo timers, and safe-area-aware playfield clamping.",
+    accentColor: "#00E5FF",
+    tags: ["Flutter", "Arcade Game", "CustomPainter", "Audioplayers"]
+  },
+  {
+    id: "sonora",
+    number: "07",
+    title: "SONORA",
+    subtitle: "Offline Audiophile Music Player & C++ DSP Suite",
+    category: "Mobile App Development",
+    year: "2026",
+    platform: "Flutter · Android · iOS · C++17 FFI",
+    role: "Developer & Audio Architect",
+    githubUrl: "https://github.com/MrhRafi3/SONORA",
+    coverImage: "/images/project-covers/sonora-cover.webp",
+    screenshots: [],
+    overview: "A dark-charcoal and warm-amber offline music player built with Feature-based Clean Architecture, combining Drift SQLite library indexing, just_audio background playback, and a native C++17 Biquad DSP engine over Dart FFI.",
+    developmentDirection: "Offline library indexing, artwork caching, background just_audio/audio_service playback, and the 10-band EQ UI are implemented and verified in simulator/automated tests; live PCM audio tapping from ExoPlayer/AVPlayer into the C++ DSP pipeline and physical hardware QA remain deferred.",
+    problemStatement: "Mobile music players often mix UI state with storage scans, drop frames during large library scrolls, or lack audiophile-grade dark ergonomics and modular DSP controls.",
+    verifiedFeatures: [
+      "Offline audio discovery via Android MediaStore platform channel (READ_MEDIA_AUDIO) and iOS Files sandboxed import.",
+      "Indexed Drift SQLite library supporting search, 5 sort modes, format filters (Hi-Res/Lossless/Standard), favorites, and reorderable playlists.",
+      "Embedded metadata parsing and SHA-1 artwork disk caching with 500-entry in-memory LRU lookup and 150 MB cap.",
+      "Single-instance just_audio playback with audio_service lock-screen/notification controls, smart previous, non-destructive shuffle, and repeat modes.",
+      "Charcoal-and-amber UI with 5 accent presets, 5/10-band EQ frequency-response graph, and a C++17 Biquad/FFT FFI package (live audio-pipeline tap deferred)."
+    ],
+    techStack: ["Flutter", "Dart", "Riverpod", "Drift SQLite", "just_audio", "C++17 FFI"],
+    metricsOrHighlight: "Indexed Drift SQLite library, 150 MB LRU artwork cache, and C++17 Biquad/FFT FFI engine.",
+    accentColor: "#E59866",
+    tags: ["Flutter", "Drift SQLite", "just_audio", "C++17 FFI"]
   }
 ];
 

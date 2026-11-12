@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TECHNICAL_DEEP_DIVE } from '../../data/portfolioData';
 import { Cpu, Clock, Database, CheckCircle2, Copy, Check } from 'lucide-react';
+import { TextScramble } from '../common/TextScramble';
 
 export const TechnicalDeepDiveSection: React.FC = () => {
   const [selectedTopicIdx, setSelectedTopicIdx] = useState(0);
@@ -25,18 +26,18 @@ export const TechnicalDeepDiveSection: React.FC = () => {
           <span className="font-tech text-xs font-bold tracking-widest uppercase text-[#F20D16]">
             05 — Engineering
           </span>
-          <span className="font-tech text-xs tracking-wider text-[#080713]/60 uppercase">
-            Code &amp; Architecture
-          </span>
+          <TextScramble
+            text="Code & Architecture"
+            className="font-tech text-xs tracking-wider text-[#080713]/60 uppercase"
+          />
         </div>
 
         {/* Main Content */}
         <div className="my-auto py-4 flex flex-col gap-6">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
             <h2 className="font-display font-black text-[clamp(2rem,4.4vw,3.9rem)] tracking-tight text-[#080713] uppercase leading-[0.94]">
-              Systems Engineering
-              <br />
-              <span className="text-[#F20D16] font-serif-italic capitalize font-normal">
+              <TextScramble text="Systems Engineering" className="block" />
+              <span className="block text-[#F20D16] font-serif-italic capitalize font-normal">
                 In A Mobile Runtime
               </span>
             </h2>

@@ -133,7 +133,9 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
               <div className="flex items-center gap-2">
                 <Smartphone className="w-4 h-4 text-[#F20D16]" />
                 <span className="font-tech text-xs uppercase tracking-widest text-white/80 font-bold">
-                  VERIFIED APPLICATION SCREENSHOTS ({activeImageIdx + 1}/{project.screenshots.length})
+                  {project.screenshots.length > 0
+                    ? `VERIFIED APPLICATION SCREENSHOTS (${activeImageIdx + 1}/${project.screenshots.length})`
+                    : 'REPOSITORY VISUAL IDENTITY'}
                 </span>
               </div>
 
@@ -165,10 +167,20 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
             <div className="relative w-full h-[360px] sm:h-[460px] md:h-[540px] bg-black/60 rounded-2xl overflow-hidden border border-white/10 flex items-center justify-center p-4">
               <img
                 src={currentScreenshot}
-                alt={`${project.title} screenshot ${activeImageIdx + 1}`}
+                alt={
+                  project.screenshots.length > 0
+                    ? `${project.title} screenshot ${activeImageIdx + 1}`
+                    : `${project.title} visual identity`
+                }
                 className="max-h-full max-w-full object-contain rounded-xl shadow-2xl transition-all duration-300"
               />
             </div>
+
+            {project.screenshots.length === 0 && (
+              <p className="font-tech text-[11px] text-white/55 tracking-wide">
+                Authentic repository branding and sprite assets shown above; live device screenshots are not archived in the source repository.
+              </p>
+            )}
 
             {/* Thumbnail Strip */}
             {project.screenshots.length > 1 && (

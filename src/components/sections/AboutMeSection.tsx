@@ -2,32 +2,19 @@ import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PROFILE } from '../../data/portfolioData';
+import { RevealHeading } from '../common/RevealHeading';
+import { prefersReducedMotion } from '../../utils/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export const AboutMeSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const headlineRef = useRef<HTMLDivElement>(null);
   const specsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (prefersReducedMotion()) return;
 
     const ctx = gsap.context(() => {
-      if (headlineRef.current) {
-        gsap.from(headlineRef.current.children, {
-          y: 16,
-          stagger: 0.08,
-          duration: 0.45,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 85%',
-            toggleActions: 'play none none none',
-          },
-        });
-      }
-
       if (specsRef.current) {
         gsap.from(specsRef.current.children, {
           y: 14,
@@ -66,13 +53,23 @@ export const AboutMeSection: React.FC = () => {
         {/* Editorial Split */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center my-auto py-6">
           {/* Left: Oversized Typography + Bio */}
-          <div ref={headlineRef} className="lg:col-span-7 min-w-0 flex flex-col">
-            <h2 className="font-display font-black text-[clamp(1.95rem,4.1vw,3.75rem)] tracking-tight text-[#080713] leading-[0.92] uppercase">
-              Designing Experiences.
-            </h2>
-            <p className="font-serif-italic font-normal text-[clamp(2.25rem,4.7vw,4.5rem)] text-[#F20D16] leading-[0.9] tracking-tight mt-1">
-              Engineering mobile apps.
-            </p>
+          <div className="lg:col-span-7 min-w-0 flex flex-col">
+            <RevealHeading
+              as="h2"
+              className="flex flex-col"
+              lines={[
+                {
+                  text: 'Designing Experiences.',
+                  className:
+                    'font-display font-black text-[clamp(1.95rem,4.1vw,3.75rem)] tracking-tight text-[#080713] leading-[0.92] uppercase',
+                },
+                {
+                  text: 'Engineering mobile apps.',
+                  className:
+                    'font-serif-italic font-normal text-[clamp(2.25rem,4.7vw,4.5rem)] text-[#F20D16] leading-[0.9] tracking-tight mt-1',
+                },
+              ]}
+            />
 
             <div className="flex flex-col gap-4 mt-7 max-w-2xl text-sm sm:text-base md:text-[1.06rem] text-[#080713]/85 leading-relaxed">
               {PROFILE.biography.map((paragraph, idx) => (

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CheckCircle2, ArrowUpRight } from 'lucide-react';
 import { WORKFLOW_STAGES } from '../../data/portfolioData';
 import { scrollToSection } from '../../utils/scroll';
+import { RevealHeading } from '../common/RevealHeading';
 
 export const WorkflowSection: React.FC = () => {
   const [activeStage, setActiveStage] = useState(0);
@@ -27,13 +28,17 @@ export const WorkflowSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center my-auto py-5">
           {/* Left: Oversized Title & Interactive 5-Step List */}
           <div className="lg:col-span-5 flex flex-col">
-            <h2 className="font-display font-black text-[clamp(2.2rem,4.5vw,4rem)] tracking-tight text-white uppercase leading-[0.92]">
-              From Idea to
-              <br />
-              <span className="font-serif-italic capitalize font-normal text-[#F20D16]">
-                60fps Reality.
-              </span>
-            </h2>
+            <RevealHeading
+              as="h2"
+              className="font-display font-black text-[clamp(2.2rem,4.5vw,4rem)] tracking-tight text-white uppercase leading-[0.92]"
+              lines={[
+                { text: 'From Idea to' },
+                {
+                  text: '60fps Reality.',
+                  className: 'font-serif-italic capitalize font-normal text-[#F20D16]',
+                },
+              ]}
+            />
 
             <div className="mt-6 border-t border-white/10 flex flex-col">
               {WORKFLOW_STAGES.map((stage, idx) => {

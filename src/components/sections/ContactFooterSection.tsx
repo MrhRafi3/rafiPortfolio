@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowUpRight, Copy, Check, ArrowUp, Github, Linkedin, Mail } from 'lucide-react';
 import { scrollToSection } from '../../utils/scroll';
 import { PROFILE } from '../../data/portfolioData';
+import { RevealHeading } from '../common/RevealHeading';
 
 export const ContactFooterSection: React.FC = () => {
   const [copied, setCopied] = useState(false);
@@ -32,11 +33,14 @@ export const ContactFooterSection: React.FC = () => {
         {/* Editorial Split */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center my-auto py-6">
           <div className="lg:col-span-7 flex flex-col">
-            <h2 className="font-display font-black text-[clamp(2.6rem,6vw,5.4rem)] tracking-tight leading-[0.88] uppercase text-white">
-              Have a project
-              <br />
-              in mind?
-            </h2>
+            <RevealHeading
+              as="h2"
+              className="font-display font-black text-[clamp(2.6rem,6vw,5.4rem)] tracking-tight leading-[0.88] uppercase text-white"
+              lines={[
+                { text: 'Have a project' },
+                { text: 'in mind?' },
+              ]}
+            />
             <p className="mt-2 font-display font-black text-[clamp(2.2rem,5vw,4.5rem)] tracking-tight leading-[0.95] text-white">
               Let&apos;s build something{' '}
               <span className="font-serif-italic font-normal text-[#F20D16] text-[1.12em]">
