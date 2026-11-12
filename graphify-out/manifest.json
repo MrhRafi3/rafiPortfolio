@@ -24,9 +24,9 @@
     "semantic_hash": ""
   },
   "src/components/common/ContinuousSnakeLine.tsx": {
-    "mtime": 1794477997.0980113,
-    "seen": 1794478196.8754601,
-    "ast_hash": "5f0f0f6e65ae6cf0dc3895016282de5e",
+    "mtime": 1794479500.4001253,
+    "seen": 1794479672.351904,
+    "ast_hash": "110148bb62bb845ce8a1243e54bf7de7",
     "semantic_hash": ""
   },
   "src/components/common/Navbar.tsx": {
@@ -48,9 +48,9 @@
     "semantic_hash": ""
   },
   "src/components/sections/HeroSection.tsx": {
-    "mtime": 1794477903.2236326,
-    "seen": 1794478196.875463,
-    "ast_hash": "8034d39706a27459212ad5f8b9499ddc",
+    "mtime": 1794479609.8484616,
+    "seen": 1794479672.3519082,
+    "ast_hash": "16288096a8b5e37cdebbe827184d0cfc",
     "semantic_hash": ""
   },
   "src/components/sections/HorizontalProjectGallery.tsx": {
@@ -402,9 +402,9 @@
     "semantic_hash": ""
   },
   "src/components/canvas/HeroLaptopCanvas.tsx": {
-    "mtime": 1794477809.971975,
-    "seen": 1794478196.875455,
-    "ast_hash": "ed598febc032f51b10bb6b93fb1af93e",
+    "mtime": 1794479511.3295152,
+    "seen": 1794479672.351899,
+    "ast_hash": "5fbbb159b2879a87ea862dba813acc16",
     "semantic_hash": ""
   },
   "src/components/canvas/StopwatchCanvas.tsx": {

@@ -65,12 +65,12 @@ export const HeroLaptopCanvas: React.FC<HeroLaptopCanvasProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
-    const width = container.clientWidth || 600;
-    const height = container.clientHeight || 450;
+    const width = container.clientWidth || 760;
+    const height = container.clientHeight || 480;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 100);
-    camera.position.set(0, 0.05, 6.2);
+    const camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 100);
+    camera.position.set(0, 0.04, 5.75);
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -102,19 +102,19 @@ export const HeroLaptopCanvas: React.FC<HeroLaptopCanvasProps> = ({
     scene.add(redRimLight);
 
     const shadow = createSoftGroundShadow({
-      width: 4.8,
-      height: 2.9,
-      opacity: 0.45,
-      yPosition: -1.18,
+      width: 5.4,
+      height: 3.2,
+      opacity: 0.5,
+      yPosition: -1.3,
     });
     scene.add(shadow.mesh);
 
     const laptopGroup = new THREE.Group();
     scene.add(laptopGroup);
 
-    const baseRotX = 0.30;
-    const baseRotY = -0.44;
-    const baseRotZ = -0.06;
+    const baseRotX = 0.34;
+    const baseRotY = -0.46;
+    const baseRotZ = -0.07;
 
     let isDisposed = false;
     let screenTexture: THREE.Texture | null = null;
@@ -184,7 +184,7 @@ export const HeroLaptopCanvas: React.FC<HeroLaptopCanvasProps> = ({
         model.position.sub(center);
 
         const maxDim = Math.max(size.x, size.y, size.z);
-        const targetScale = 2.55 / (maxDim || 1);
+        const targetScale = 2.75 / (maxDim || 1);
         wrapper.scale.setScalar(targetScale);
 
         model.traverse((child) => {
@@ -214,15 +214,15 @@ export const HeroLaptopCanvas: React.FC<HeroLaptopCanvasProps> = ({
       renderer,
       scene,
       initialRotation: [baseRotX, baseRotY, baseRotZ],
-      initialPosition: [0, 0.08, 0],
+      initialPosition: [0, 0.06, 0],
       verticalClamp: [-Math.PI / 3, Math.PI / 3],
       sensitivity: 0.0055,
       inertiaDamping: 0.92,
       enableFloating: false,
       onResize: (_w, _h, aspect) => {
-        // Keep full laptop + bottom edge unclipped across tall/narrow/wide containers
-        const distanceScale = aspect < 1.15 ? 1.15 / Math.max(aspect, 0.72) : 1;
-        camera.position.set(0, 0.04, Math.min(8.6, 6.2 * distanceScale));
+        // Keep full laptop + bottom edge unclipped across narrow mobile and wide desktop stages
+        const distanceScale = aspect < 1.38 ? 1.38 / Math.max(aspect, 0.72) : 1;
+        camera.position.set(0, 0.04, Math.min(8.6, 5.75 * distanceScale));
       },
       onRender: () => {
         shadow.mesh.position.x = laptopGroup.position.x * 0.4;

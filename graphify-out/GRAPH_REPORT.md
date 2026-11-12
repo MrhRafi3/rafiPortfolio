@@ -1,7 +1,7 @@
 # Graph Report - TypoPortfolio  (2026-11-12)
 
 ## Corpus Check
-- 33 files · ~14,416 words
+- 33 files · ~14,572 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 14 file(s) not represented in the graph (top: (none) 11, .glb 2, .css 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8d377b0f`
+- Built from commit: `1b532feb`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -30,25 +30,25 @@
 1. `react` - 18 edges
 2. `compilerOptions` - 16 edges
 3. `App()` - 15 edges
-4. `lucide-react` - 9 edges
-5. `scrollToSection()` - 9 edges
-6. `gsap` - 8 edges
-7. `three` - 8 edges
-8. `HeroLaptopCanvas()` - 8 edges
+4. `scrollToSection()` - 9 edges
+5. `lucide-react` - 9 edges
+6. `HeroLaptopCanvas()` - 8 edges
+7. `gsap` - 8 edges
+8. `three` - 8 edges
 9. `StopwatchCanvas()` - 7 edges
-10. `puppeteer` - 6 edges
+10. `ProjectItem` - 6 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `App()` --calls--> `ContinuousSnakeLine()`  [EXTRACTED]
-  src/App.tsx → src/components/common/ContinuousSnakeLine.tsx
-- `App()` --calls--> `HorizontalProjectGallery()`  [EXTRACTED]
-  src/App.tsx → src/components/sections/HorizontalProjectGallery.tsx
 - `HeroSection()` --calls--> `HeroLaptopCanvas()`  [EXTRACTED]
   src/components/sections/HeroSection.tsx → src/components/canvas/HeroLaptopCanvas.tsx
-- `ProjectEditorialSlide()` --calls--> `StopwatchCanvas()`  [EXTRACTED]
-  src/components/sections/HorizontalProjectGallery.tsx → src/components/canvas/StopwatchCanvas.tsx
+- `App()` --calls--> `ContinuousSnakeLine()`  [EXTRACTED]
+  src/App.tsx → src/components/common/ContinuousSnakeLine.tsx
 - `ProjectSlideProps` --references--> `ProjectItem`  [EXTRACTED]
   src/components/sections/HorizontalProjectGallery.tsx → src/types/index.ts
+- `ProjectDetailModalProps` --references--> `ProjectItem`  [EXTRACTED]
+  src/components/sections/ProjectDetailModal.tsx → src/types/index.ts
+- `App()` --calls--> `HorizontalProjectGallery()`  [EXTRACTED]
+  src/App.tsx → src/components/sections/HorizontalProjectGallery.tsx
 
 ## Import Cycles
 - None detected.

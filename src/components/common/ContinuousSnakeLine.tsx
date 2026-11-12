@@ -36,7 +36,7 @@ function catmullRomToBezier(points: Point[]): string {
 
 export const ContinuousSnakeLine: React.FC<{ className?: string }> = ({ className = '' }) => {
   const pathRef = useRef<SVGPathElement>(null);
-  const [dimensions, setDimensions] = useState({ width: 1440, height: 6000 });
+  const [dimensions, setDimensions] = useState({ width: 1440, height: 1000 });
   const [pathData, setPathData] = useState('');
   const [gradientStops, setGradientStops] = useState<GradientStop[]>([
     { offset: '0%', color: '#F1EBDD' },
@@ -51,17 +51,14 @@ export const ContinuousSnakeLine: React.FC<{ className?: string }> = ({ classNam
       return;
     }
 
-    const docHeight = Math.max(
-      document.body.scrollHeight,
-      document.documentElement.scrollHeight,
-      document.querySelector('main')?.scrollHeight || 0
-    );
+    const mainEl = document.querySelector('main');
+    const mainTop = mainEl ? mainEl.getBoundingClientRect().top + window.scrollY : 0;
 
     const getBounds = (id: string, fallbackTop: number, fallbackHeight: number) => {
       const el = document.getElementById(id);
       if (!el) return { top: fallbackTop, height: fallbackHeight };
       const rect = el.getBoundingClientRect();
-      return { top: rect.top + window.scrollY, height: el.offsetHeight };
+      return { top: rect.top + window.scrollY - mainTop, height: el.offsetHeight };
     };
 
     const hero = getBounds('hero', 0, 900);
@@ -72,11 +69,19 @@ export const ContinuousSnakeLine: React.FC<{ className?: string }> = ({ classNam
     const deepDive = getBounds('deep-dive', 7200, 900);
     const contact = getBounds('contact', 8100, 900);
 
+    // Always anchor the SVG coordinate height to the real bottom of #contact
+    // (never read document.scrollHeight so a stale SVG height can never inflate page height)
+    const contentHeight = Math.max(
+      1000,
+      Math.round(contact.top + contact.height)
+    );
+
     const workEl = document.getElementById('work');
     const pinSpacer = workEl?.closest('.pin-spacer') as HTMLElement | null;
-    const workEffectiveHeight = pinSpacer ? pinSpacer.offsetHeight : Math.max(work.height, process.top - work.top);
+    const workEffectiveHeight = pinSpacer
+      ? pinSpacer.offsetHeight
+      : Math.max(work.height, process.top - work.top);
 
-    // Keep waypoints along the outer right margin so content & 3D canvases stay unobstructed
     const xOuter = width * 0.975;
     const xInner = width * 0.945;
 
@@ -93,12 +98,13 @@ export const ContinuousSnakeLine: React.FC<{ className?: string }> = ({ classNam
       { x: xOuter, y: contact.top + contact.height * 0.82 },
     ];
 
-    setDimensions({ width, height: docHeight });
+    setDimensions({ width, height: contentHeight });
     setPathData(catmullRomToBezier(waypoints));
 
     const RED = '#F20D16';
     const CREAM = '#F1EBDD';
-    const pct = (y: number) => `${((Math.max(0, Math.min(docHeight, y)) / docHeight) * 100).toFixed(2)}%`;
+    const pct = (y: number) =>
+      `${((Math.max(0, Math.min(contentHeight, y)) / contentHeight) * 100).toFixed(2)}%`;
 
     setGradientStops([
       { offset: '0%', color: CREAM },
@@ -110,25 +116,26 @@ export const ContinuousSnakeLine: React.FC<{ className?: string }> = ({ classNam
 
   useEffect(() => {
     calculateWaypoints();
+    ScrollTrigger.addEventListener('refresh', calculateWaypoints);
 
     let resizeTimer: ReturnType<typeof setTimeout>;
     const handleResize = () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
-        calculateWaypoints();
+        // Refresh ScrollTrigger first so pin-spacer updates before 'refresh' recalculates the path
         ScrollTrigger.refresh();
       }, 150);
     };
 
     window.addEventListener('resize', handleResize, { passive: true });
     document.fonts?.ready.then(() => {
-      calculateWaypoints();
       ScrollTrigger.refresh();
     });
 
     return () => {
       clearTimeout(resizeTimer);
       window.removeEventListener('resize', handleResize);
+      ScrollTrigger.removeEventListener('refresh', calculateWaypoints);
     };
   }, [calculateWaypoints]);
 
@@ -207,37 +214,41 @@ export const ContinuousSnakeLine: React.FC<{ className?: string }> = ({ classNam
   if (!pathData) return null;
 
   return (
-    <svg
-      className={`hidden md:block absolute top-0 left-0 w-full pointer-events-none select-none z-[2] opacity-40 ${className}`}
-      style={{ height: `${dimensions.height}px` }}
-      viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+    <div
+      className={`hidden md:block absolute inset-0 overflow-hidden pointer-events-none select-none z-[2] opacity-40 ${className}`}
       aria-hidden="true"
     >
-      <defs>
-        <linearGradient
-          id="continuous-snake-gradient"
-          x1="0"
-          y1="0"
-          x2="0"
-          y2={dimensions.height}
-          gradientUnits="userSpaceOnUse"
-        >
-          {gradientStops.map((stop, idx) => (
-            <stop key={idx} offset={stop.offset} stopColor={stop.color} />
-          ))}
-        </linearGradient>
-      </defs>
-      <path
-        ref={pathRef}
-        d={pathData}
-        stroke="url(#continuous-snake-gradient)"
-        strokeWidth={24}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        vectorEffect="non-scaling-stroke"
-      />
-    </svg>
+      <svg
+        className="w-full h-full block"
+        viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
+        preserveAspectRatio="none"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient
+            id="continuous-snake-gradient"
+            x1="0"
+            y1="0"
+            x2="0"
+            y2={dimensions.height}
+            gradientUnits="userSpaceOnUse"
+          >
+            {gradientStops.map((stop, idx) => (
+              <stop key={idx} offset={stop.offset} stopColor={stop.color} />
+            ))}
+          </linearGradient>
+        </defs>
+        <path
+          ref={pathRef}
+          d={pathData}
+          stroke="url(#continuous-snake-gradient)"
+          strokeWidth={24}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+        />
+      </svg>
+    </div>
   );
 };
